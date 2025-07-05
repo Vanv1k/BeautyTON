@@ -1,0 +1,29 @@
+name: Deploy Backend
+
+on:
+  push:
+    branches: [develop, master]
+    paths:
+      - 'backend/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy Backend
+        run: |
+          DEPLOY_TARGET="${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}"
+          if [[ $GITHUB_REF == 'refs/heads/develop' ]]; then
+            ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET "cd /var/www/backend-dev && git pull && go build -o app && systemctl restart backend-dev"
+          elif [[ $GITHUB_REF == 'refs/heads/master' ]]; then
+            ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET "cd /var/www/backend-prod && git pull && go build -o app && systemctl restart backend-prod"
+          fi
