@@ -23,7 +23,7 @@ jobs:
         run: |
           DEPLOY_TARGET="${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}"
           if [[ $GITHUB_REF == 'refs/heads/develop' ]]; then
-            ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET "cd /var/www/backend-dev && git pull && go build -o app && systemctl restart backend-dev"
+            ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET "cd /var/www/beautyton/backend-dev && git pull && go build -o app && systemctl restart backend-dev"
           elif [[ $GITHUB_REF == 'refs/heads/main' ]]; then
-            ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET "cd /var/www/backend-prod && git pull && go build -o app && systemctl restart backend-prod"
+            ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET "cd /var/www/beautyton/backend-prod && git pull && go build -o app && systemctl restart backend-prod"
           fi
