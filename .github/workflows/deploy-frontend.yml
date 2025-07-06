@@ -23,7 +23,7 @@ jobs:
         run: |
           DEPLOY_TARGET="${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}"
           if [[ $GITHUB_REF == 'refs/heads/develop' ]]; then
-            ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET "cd /var/www/frontend-dev && git pull && npm i && npm run build"
+            ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET "cd /var/www/beautyton/frontend-dev && git pull && npm i && npm run build"
           elif [[ $GITHUB_REF == 'refs/heads/main' ]]; then
-            ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET "cd /var/www/frontend-prod && git pull && npm i && npm run build"
+            ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET "cd /var/www/beautyton/frontend-prod && git pull && npm i && npm run build"
           fi
