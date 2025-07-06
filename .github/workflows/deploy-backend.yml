@@ -22,16 +22,15 @@ jobs:
       - name: Deploy Backend
         run: |
           DEPLOY_TARGET="${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}"
-
           if [[ $GITHUB_REF == 'refs/heads/develop' ]]; then
             ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET bash -c "'
               if [ -d /var/www/beautyton/backend-dev/.git ]; then
                 cd /var/www/beautyton/backend-dev && git pull
               else
-                git clone git@github.com:yourusername/yourbackendrepo.git /var/www/beautyton/backend-dev
+                git clone git@github.com:Vanv1k/BeautyTON.git /var/www/beautyton/backend-dev
               fi
               cd /var/www/beautyton/backend-dev
-              go build -o app
+              go build -o ../app ./cmd/main
               systemctl restart backend-dev
             '"
           elif [[ $GITHUB_REF == 'refs/heads/main' ]]; then
@@ -39,10 +38,10 @@ jobs:
               if [ -d /var/www/beautyton/backend-prod/.git ]; then
                 cd /var/www/beautyton/backend-prod && git pull
               else
-                git clone git@github.com:yourusername/yourbackendrepo.git /var/www/beautyton/backend-prod
+                git clone git@github.com:Vanv1k/BeautyTON.git /var/www/beautyton/backend-prod
               fi
               cd /var/www/beautyton/backend-prod
-              go build -o app
+              go build -o ../app ./cmd/main
               systemctl restart backend-prod
             '"
           fi
