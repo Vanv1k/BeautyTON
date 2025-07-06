@@ -29,7 +29,7 @@ jobs:
               else
                 git clone git@github.com:Vanv1k/BeautyTON.git /var/www/beautyton/backend-dev
               fi
-              cd /var/www/beautyton/backend-dev
+              cd /var/www/beautyton/backend-dev/backend
               go build -o ../app ./cmd/main
               systemctl restart backend-dev
             '"
@@ -40,7 +40,7 @@ jobs:
               else
                 git clone git@github.com:Vanv1k/BeautyTON.git /var/www/beautyton/backend-prod
               fi
-              cd /var/www/beautyton/backend-prod
+              cd /var/www/beautyton/backend-dev/backend
               go build -o ../app ./cmd/main
               systemctl restart backend-prod
             '"
