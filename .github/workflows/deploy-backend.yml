@@ -21,32 +21,27 @@ jobs:
 
       - name: Deploy Backend
         run: |
-          DEPLOY_TARGET="${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}"
-          if [[ $GITHUB_REF == 'refs/heads/develop' ]]; then
-            ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET bash -c "'
-              if [ -d /var/www/beautyton/backend-dev/.git ]; then
+            DEPLOY_TARGET="${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}"
+            if [[ $GITHUB_REF == 'refs/heads/develop' ]]; then
+              ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET bash -c "'
+                cd /var/www/beautyton/backend-dev || { mkdir -p /var/www/beautyton/backend-dev; cd /var/www/beautyton/backend-dev; git clone git@github.com:Vanv1k/BeautyTON.git .; }
+                cd /var/www/beautyton/backend-dev
                 git fetch origin
                 git checkout develop
                 git reset --hard origin/develop
-              else
-                git clone git@github.com:Vanv1k/BeautyTON.git /var/www/beautyton/backend-dev
-              fi
-              cd /var/www/beautyton/backend-dev
-              go build -o ../app ./backend/cmd
-              systemctl restart backend-dev
-            '"
-          elif [[ $GITHUB_REF == 'refs/heads/main' ]]; then
-            ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET bash -c "'
-              if [ -d /var/www/beautyton/backend-prod/.git ]; then
-                cd /var/www/beautyton/backend-prod && git pull
-              else
-                git clone git@github.com:Vanv1k/BeautyTON.git /var/www/beautyton/backend-prod
-              fi
-              cd /var/www/beautyton/backend-prod
-              git fetch origin
-              git checkout main
-              git reset --hard origin/main
-              go build -o ../app ./backend/cmd
-              systemctl restart backend-prod
-            '"
-          fi
+                cd backend
+                go build -o ../../app ./cmd
+                systemctl restart backend-dev
+              '"
+            elif [[ $GITHUB_REF == 'refs/heads/main' ]]; then
+              ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET bash -c "'
+                cd /var/www/beautyton/backend-prod || { mkdir -p /var/www/beautyton/backend-prod; cd /var/www/beautyton/backend-prod; git clone git@github.com:Vanv1k/BeautyTON.git .; }
+                cd /var/www/beautyton/backend-prod
+                git fetch origin
+                git checkout main
+                git reset --hard origin/main
+                cd backend
+                go build -o ../../app ./cmd
+                systemctl restart backend-prod
+              '"
+            fi
