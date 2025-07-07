@@ -4,7 +4,7 @@ on:
   push:
     branches: [develop, main]
     paths:
-      - 'frontend/**'
+      - "frontend/**"
 
 jobs:
   deploy:
@@ -23,7 +23,23 @@ jobs:
         run: |
           DEPLOY_TARGET="${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}"
           if [[ $GITHUB_REF == 'refs/heads/develop' ]]; then
-            ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET "cd /var/www/beautyton/frontend-dev && git pull && npm i && npm run build"
+            ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET bash -c "'
+              cd /var/www/beautyton/miniapp/dev
+              git fetch origin
+              git checkout develop
+              git reset --hard origin/develop
+              cd frontend
+              npm install
+              npm run build
+            '"
           elif [[ $GITHUB_REF == 'refs/heads/main' ]]; then
-            ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET "cd /var/www/beautyton/frontend-prod && git pull && npm i && npm run build"
+            ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET bash -c "'
+              cd /var/www/beautyton/miniapp/prod
+              git fetch origin
+              git checkout main
+              git reset --hard origin/main
+              cd frontend
+              npm install
+              npm run build
+            '"
           fi
