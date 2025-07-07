@@ -33,7 +33,7 @@ jobs:
                 go build -o ../app ./cmd
                 chmod +x ../app
                 systemctl daemon-reload
-                systemctl restart backend-prod
+                systemctl restart backend-dev
               '"
             elif [[ $GITHUB_REF == 'refs/heads/main' ]]; then
               ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET bash -c "'
