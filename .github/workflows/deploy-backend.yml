@@ -27,7 +27,7 @@ jobs:
               if [ -d /var/www/beautyton/backend-dev/.git ]; then
                 git fetch origin
                 git checkout develop
-                cd /var/www/beautyton/backend-dev && git pull
+                git reset --hard origin/develop
               else
                 git clone git@github.com:Vanv1k/BeautyTON.git /var/www/beautyton/backend-dev
               fi
@@ -42,9 +42,10 @@ jobs:
               else
                 git clone git@github.com:Vanv1k/BeautyTON.git /var/www/beautyton/backend-prod
               fi
-              cd /var/www/beautyton/backend-dev/backend
+              cd /var/www/beautyton/backend-prod/backend               
               git fetch origin
               git checkout main
+              git reset --hard origin/main
               go build -o ../app ./cmd
               systemctl restart backend-prod
             '"
