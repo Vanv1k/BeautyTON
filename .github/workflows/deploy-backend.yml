@@ -31,7 +31,9 @@ jobs:
                 git reset --hard origin/develop
                 cd backend
                 go build -o ../app ./cmd
-                systemctl restart backend-dev
+                chmod +x ../app
+                systemctl daemon-reload
+                systemctl restart backend-prod
               '"
             elif [[ $GITHUB_REF == 'refs/heads/main' ]]; then
               ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET bash -c "'
@@ -42,6 +44,8 @@ jobs:
                 git reset --hard origin/main
                 cd backend
                 go build -o ../app ./cmd
+                chmod +x ../app
+                systemctl daemon-reload
                 systemctl restart backend-prod
               '"
             fi
