@@ -31,8 +31,8 @@ jobs:
               else
                 git clone git@github.com:Vanv1k/BeautyTON.git /var/www/beautyton/backend-dev
               fi
-              cd /var/www/beautyton/backend-dev/backend
-              go build -o ../app ./cmd
+              cd /var/www/beautyton/backend-dev
+              go build -o ../app ./backend/cmd
               systemctl restart backend-dev
             '"
           elif [[ $GITHUB_REF == 'refs/heads/main' ]]; then
@@ -42,11 +42,11 @@ jobs:
               else
                 git clone git@github.com:Vanv1k/BeautyTON.git /var/www/beautyton/backend-prod
               fi
-              cd /var/www/beautyton/backend-prod/backend               
+              cd /var/www/beautyton/backend-prod
               git fetch origin
               git checkout main
               git reset --hard origin/main
-              go build -o ../app ./cmd
+              go build -o ../app ./backend/cmd
               systemctl restart backend-prod
             '"
           fi
