@@ -1,4 +1,4 @@
-name: Deploy Frontend
+name: Build & Deploy Frontend
 
 on:
   push:
@@ -7,39 +7,32 @@ on:
       - "frontend/**"
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.7.0
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          node-version: "20"
 
-      - name: Deploy Frontend
-        run: |
-          DEPLOY_TARGET="${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}"
-          if [[ $GITHUB_REF == 'refs/heads/develop' ]]; then
-            ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET bash -c "'
-              cd /var/www/beautyton/miniapp/dev
-              git fetch origin
-              git checkout develop
-              git reset --hard origin/develop
-              cd frontend
-              npm install
-              npm run build
-            '"
-          elif [[ $GITHUB_REF == 'refs/heads/main' ]]; then
-            ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET bash -c "'
-              cd /var/www/beautyton/miniapp/prod
-              git fetch origin
-              git checkout main
-              git reset --hard origin/main
-              cd frontend
-              npm install
-              npm run build
-            '"
-          fi
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+
+      - name: Copy build to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "frontend/dist/"
+          target: ${{ github.ref == 'refs/heads/develop' && '/var/www/beautyton/miniapp/dev/' || '/var/www/beautyton/miniapp/prod/' }}
+          strip_components: 1
