@@ -7,7 +7,7 @@ import (
 
 func main() {
 	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "pong 15")
+		fmt.Fprint(w, "pong 16")
 	})
 
 	fmt.Println("Server running on :8080")

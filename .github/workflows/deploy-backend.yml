@@ -30,7 +30,7 @@ jobs:
                 git checkout develop
                 git reset --hard origin/develop
                 cd backend
-                go build -o ../../app ./cmd
+                go build -o ../app ./cmd
                 systemctl restart backend-dev
               '"
             elif [[ $GITHUB_REF == 'refs/heads/main' ]]; then
@@ -41,7 +41,7 @@ jobs:
                 git checkout main
                 git reset --hard origin/main
                 cd backend
-                go build -o ../../app ./cmd
+                go build -o ../app ./cmd
                 systemctl restart backend-prod
               '"
             fi
