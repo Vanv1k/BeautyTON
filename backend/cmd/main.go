@@ -16,6 +16,6 @@ func main() {
 		port = "8080" // Запасной порт, если переменная PORT не задана
 	}
 
-	fmt.Println("Server running on :8080")
-	http.ListenAndServe(":8080", nil)
+	fmt.Printf("Server running on :%s\n", port)
+	http.ListenAndServe(":"+port, nil) // Используем переменную port
 }
