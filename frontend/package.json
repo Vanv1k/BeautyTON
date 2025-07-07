@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "beautyton-miniapp",
   "private": true,
   "type": "module",
   "scripts": {
