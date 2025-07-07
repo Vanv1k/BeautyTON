@@ -2,7 +2,7 @@ name: Deploy Backend
 
 on:
   push:
-    branches: [develop, master]
+    branches: [develop, main]
     paths:
       - 'backend/**'
 
@@ -21,9 +21,31 @@ jobs:
 
       - name: Deploy Backend
         run: |
-          DEPLOY_TARGET="${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}"
-          if [[ $GITHUB_REF == 'refs/heads/develop' ]]; then
-            ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET "cd /var/www/backend-dev && git pull && go build -o app && systemctl restart backend-dev"
-          elif [[ $GITHUB_REF == 'refs/heads/master' ]]; then
-            ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET "cd /var/www/backend-prod && git pull && go build -o app && systemctl restart backend-prod"
-          fi
+            DEPLOY_TARGET="${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}"
+            if [[ $GITHUB_REF == 'refs/heads/develop' ]]; then
+              ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET bash -c "'
+                cd /var/www/beautyton/backend-dev || { mkdir -p /var/www/beautyton/backend-dev; cd /var/www/beautyton/backend-dev; git clone git@github.com:Vanv1k/BeautyTON.git .; }
+                cd /var/www/beautyton/backend-dev
+                git fetch origin
+                git checkout develop
+                git reset --hard origin/develop
+                cd backend
+                go build -o ../app ./cmd
+                chmod +x ../app
+                systemctl daemon-reload
+                systemctl restart backend-dev
+              '"
+            elif [[ $GITHUB_REF == 'refs/heads/main' ]]; then
+              ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET bash -c "'
+                cd /var/www/beautyton/backend-prod || { mkdir -p /var/www/beautyton/backend-prod; cd /var/www/beautyton/backend-prod; git clone git@github.com:Vanv1k/BeautyTON.git .; }
+                cd /var/www/beautyton/backend-prod
+                git fetch origin
+                git checkout main
+                git reset --hard origin/main
+                cd backend
+                go build -o ../app ./cmd
+                chmod +x ../app
+                systemctl daemon-reload
+                systemctl restart backend-prod
+              '"
+            fi
