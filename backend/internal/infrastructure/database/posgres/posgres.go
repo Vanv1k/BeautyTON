@@ -39,6 +39,4 @@ func NewPostgresRepo(cfg config.PostgresConfig) (*Postgres, error) {
 	}
 
 	return &Postgres{db: db}, nil
-
-	return nil, nil
 }
