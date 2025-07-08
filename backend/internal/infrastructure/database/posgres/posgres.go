@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/Vanv1k/BeautyTON/internal/config"
+	"github.com/Vanv1k/BeautyTON/internal/domain/entity"
 )
 
 type Postgres struct {
