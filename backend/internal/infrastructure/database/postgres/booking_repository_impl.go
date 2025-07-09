@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/Vanv1k/BeautyTON/internal/domain/entity"
+	"github.com/Vanv1k/BeautyTON/internal/domain/errors"
 	"github.com/Vanv1k/BeautyTON/internal/domain/repository"
 )
 
