@@ -21,8 +21,9 @@ export const MiniappInitializer = () => {
       });
     }
 
-    alert(`Launch params: ${JSON.stringify(launchParams.tgWebAppData?.user)}`);
-  }, [launchParams.tgWebAppData?.user, router.history]);
+    // eslint-disable-next-line no-console
+    console.log(launchParams);
+  }, [launchParams, router.history]);
 
   useEffect(() => {
     if (canGoBack) {
