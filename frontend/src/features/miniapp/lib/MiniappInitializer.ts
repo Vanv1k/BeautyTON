@@ -22,10 +22,14 @@ export const MiniappInitializer = () => {
     }
 
     alert(`Launch params: ${JSON.stringify(launchParams.tgWebAppData?.user)}`);
-  }, []);
+  }, [launchParams.tgWebAppData?.user, router.history]);
 
   useEffect(() => {
-    canGoBack ? backButton.show() : backButton.hide();
+    if (canGoBack) {
+      backButton.show();
+    } else {
+      backButton.hide();
+    }
   }, [canGoBack]);
 
   return null;

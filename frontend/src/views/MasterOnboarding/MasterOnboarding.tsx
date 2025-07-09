@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import {
   Avatar,
   Button,
@@ -10,8 +9,9 @@ import {
   SelectItem,
   Textarea,
 } from '@heroui/react';
-import { ArrowRight, Camera } from 'lucide-react';
 import { useNavigate } from '@tanstack/react-router';
+import { ArrowRight, Camera } from 'lucide-react';
+import React, { useState } from 'react';
 
 const MasterOnboarding: React.FC = () => {
   const navigate = useNavigate();
@@ -118,9 +118,7 @@ const MasterOnboarding: React.FC = () => {
             isRequired
           >
             {serviceCategories.map((category) => (
-              <SelectItem key={category.key} value={category.key}>
-                {category.label}
-              </SelectItem>
+              <SelectItem key={category.key}>{category.label}</SelectItem>
             ))}
           </Select>
 

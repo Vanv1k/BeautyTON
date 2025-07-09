@@ -1,7 +1,7 @@
-import React from 'react';
 import { Avatar, Button, Card, CardBody, Chip } from '@heroui/react';
-import { MapPin, Search, Star } from 'lucide-react';
 import { useNavigate } from '@tanstack/react-router';
+import { MapPin, Search, Star } from 'lucide-react';
+import React from 'react';
 
 const Catalog: React.FC = () => {
   const navigate = useNavigate();

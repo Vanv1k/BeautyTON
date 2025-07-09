@@ -1,6 +1,6 @@
 import { Card, CardBody } from '@heroui/react';
-import { Sparkles, User } from 'lucide-react';
 import { useNavigate } from '@tanstack/react-router';
+import { Sparkles, User } from 'lucide-react';
 
 const RoleSelection: React.FC = () => {
   const navigate = useNavigate();
