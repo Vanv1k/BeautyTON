@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Avatar,
   Button,
@@ -8,11 +7,9 @@ import {
   Chip,
 } from '@heroui/react';
 import { Calendar, Smartphone, Upload } from 'lucide-react';
-import { useNavigate } from '@tanstack/react-router';
+import React from 'react';
 
 const MasterDashboard: React.FC = () => {
-  const navigate = useNavigate();
-
   return (
     <div className="min-h-screen p-4">
       <div className="text-center mb-6">

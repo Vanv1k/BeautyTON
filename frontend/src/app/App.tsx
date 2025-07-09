@@ -1,10 +1,12 @@
 import { HeroUIProvider } from '@heroui/react';
-import { RouterProvider } from '@tanstack/react-router';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { QueryProvider } from './QueryProvider';
+import { RouterProvider } from '@tanstack/react-router';
 import type { Register } from '@tanstack/react-router';
-import { IS_DEV_DOMAIN, IS_TG_MINIAPP } from '~/shared/config/general';
+
+import { QueryProvider } from './QueryProvider';
+
 import { MiniappInitializer } from '~/features/miniapp';
+import { IS_DEV_DOMAIN, IS_TG_MINIAPP } from '~/shared/config/general';
 
 type Props = {
   router: Register['router'];

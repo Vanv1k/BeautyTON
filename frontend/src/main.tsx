@@ -1,17 +1,13 @@
-import ReactDOM from 'react-dom/client';
-import { RouterProvider, createRouter } from '@tanstack/react-router';
-import { HeroUIProvider } from '@heroui/react';
+import { createRouter } from '@tanstack/react-router';
 import * as telegramMiniapp from '@telegram-apps/sdk-react';
+import ReactDOM from 'react-dom/client';
 
 import * as TanStackQueryProvider from './app';
-
-// Import the generated route tree
+import { App } from './app';
 import { routeTree } from './routeTree.gen';
-
 import './styles.css';
-import { initEruda } from './shared/lib/init/initEruda';
 import { IS_DEV_DOMAIN, IS_TG_MINIAPP } from './shared/config/general';
-import { App } from './app/App';
+import { initEruda } from './shared/lib/init/initEruda';
 
 const router = createRouter({
   routeTree,
@@ -25,6 +21,7 @@ const router = createRouter({
 });
 
 declare module '@tanstack/react-router' {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface Register {
     router: typeof router;
   }

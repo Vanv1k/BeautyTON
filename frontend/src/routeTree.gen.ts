@@ -8,130 +8,130 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as IsNotMiniappRouteImport } from './routes/is-not-miniapp'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as CatalogIndexRouteImport } from './routes/catalog/index'
-import { Route as MasterOnboardingRouteImport } from './routes/master/onboarding'
-import { Route as MasterDashboardRouteImport } from './routes/master/dashboard'
+import { Route as rootRouteImport } from './routes/__root';
+import { Route as IsNotMiniappRouteImport } from './routes/is-not-miniapp';
+import { Route as IndexRouteImport } from './routes/index';
+import { Route as CatalogIndexRouteImport } from './routes/catalog/index';
+import { Route as MasterOnboardingRouteImport } from './routes/master/onboarding';
+import { Route as MasterDashboardRouteImport } from './routes/master/dashboard';
 
 const IsNotMiniappRoute = IsNotMiniappRouteImport.update({
   id: '/is-not-miniapp',
   path: '/is-not-miniapp',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const CatalogIndexRoute = CatalogIndexRouteImport.update({
   id: '/catalog/',
   path: '/catalog/',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const MasterOnboardingRoute = MasterOnboardingRouteImport.update({
   id: '/master/onboarding',
   path: '/master/onboarding',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const MasterDashboardRoute = MasterDashboardRouteImport.update({
   id: '/master/dashboard',
   path: '/master/dashboard',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/is-not-miniapp': typeof IsNotMiniappRoute
-  '/master/dashboard': typeof MasterDashboardRoute
-  '/master/onboarding': typeof MasterOnboardingRoute
-  '/catalog': typeof CatalogIndexRoute
+  '/': typeof IndexRoute;
+  '/is-not-miniapp': typeof IsNotMiniappRoute;
+  '/master/dashboard': typeof MasterDashboardRoute;
+  '/master/onboarding': typeof MasterOnboardingRoute;
+  '/catalog': typeof CatalogIndexRoute;
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/is-not-miniapp': typeof IsNotMiniappRoute
-  '/master/dashboard': typeof MasterDashboardRoute
-  '/master/onboarding': typeof MasterOnboardingRoute
-  '/catalog': typeof CatalogIndexRoute
+  '/': typeof IndexRoute;
+  '/is-not-miniapp': typeof IsNotMiniappRoute;
+  '/master/dashboard': typeof MasterDashboardRoute;
+  '/master/onboarding': typeof MasterOnboardingRoute;
+  '/catalog': typeof CatalogIndexRoute;
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/is-not-miniapp': typeof IsNotMiniappRoute
-  '/master/dashboard': typeof MasterDashboardRoute
-  '/master/onboarding': typeof MasterOnboardingRoute
-  '/catalog/': typeof CatalogIndexRoute
+  __root__: typeof rootRouteImport;
+  '/': typeof IndexRoute;
+  '/is-not-miniapp': typeof IsNotMiniappRoute;
+  '/master/dashboard': typeof MasterDashboardRoute;
+  '/master/onboarding': typeof MasterOnboardingRoute;
+  '/catalog/': typeof CatalogIndexRoute;
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
+  fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
     | '/'
     | '/is-not-miniapp'
     | '/master/dashboard'
     | '/master/onboarding'
-    | '/catalog'
-  fileRoutesByTo: FileRoutesByTo
+    | '/catalog';
+  fileRoutesByTo: FileRoutesByTo;
   to:
     | '/'
     | '/is-not-miniapp'
     | '/master/dashboard'
     | '/master/onboarding'
-    | '/catalog'
+    | '/catalog';
   id:
     | '__root__'
     | '/'
     | '/is-not-miniapp'
     | '/master/dashboard'
     | '/master/onboarding'
-    | '/catalog/'
-  fileRoutesById: FileRoutesById
+    | '/catalog/';
+  fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  IsNotMiniappRoute: typeof IsNotMiniappRoute
-  MasterDashboardRoute: typeof MasterDashboardRoute
-  MasterOnboardingRoute: typeof MasterOnboardingRoute
-  CatalogIndexRoute: typeof CatalogIndexRoute
+  IndexRoute: typeof IndexRoute;
+  IsNotMiniappRoute: typeof IsNotMiniappRoute;
+  MasterDashboardRoute: typeof MasterDashboardRoute;
+  MasterOnboardingRoute: typeof MasterOnboardingRoute;
+  CatalogIndexRoute: typeof CatalogIndexRoute;
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/is-not-miniapp': {
-      id: '/is-not-miniapp'
-      path: '/is-not-miniapp'
-      fullPath: '/is-not-miniapp'
-      preLoaderRoute: typeof IsNotMiniappRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/is-not-miniapp';
+      path: '/is-not-miniapp';
+      fullPath: '/is-not-miniapp';
+      preLoaderRoute: typeof IsNotMiniappRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/';
+      path: '/';
+      fullPath: '/';
+      preLoaderRoute: typeof IndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/catalog/': {
-      id: '/catalog/'
-      path: '/catalog'
-      fullPath: '/catalog'
-      preLoaderRoute: typeof CatalogIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/catalog/';
+      path: '/catalog';
+      fullPath: '/catalog';
+      preLoaderRoute: typeof CatalogIndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/master/onboarding': {
-      id: '/master/onboarding'
-      path: '/master/onboarding'
-      fullPath: '/master/onboarding'
-      preLoaderRoute: typeof MasterOnboardingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/master/onboarding';
+      path: '/master/onboarding';
+      fullPath: '/master/onboarding';
+      preLoaderRoute: typeof MasterOnboardingRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/master/dashboard': {
-      id: '/master/dashboard'
-      path: '/master/dashboard'
-      fullPath: '/master/dashboard'
-      preLoaderRoute: typeof MasterDashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/master/dashboard';
+      path: '/master/dashboard';
+      fullPath: '/master/dashboard';
+      preLoaderRoute: typeof MasterDashboardRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
   }
 }
 
@@ -141,7 +141,7 @@ const rootRouteChildren: RootRouteChildren = {
   MasterDashboardRoute: MasterDashboardRoute,
   MasterOnboardingRoute: MasterOnboardingRoute,
   CatalogIndexRoute: CatalogIndexRoute,
-}
+};
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();
