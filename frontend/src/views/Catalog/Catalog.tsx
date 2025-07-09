@@ -10,6 +10,7 @@ const Catalog: React.FC = () => {
     {
       id: 1,
       name: 'Elena Kozlova',
+      nickname: 'Lena-Beauty',
       specialty: 'Makeup Artist',
       avatar:
         'https://images.pexels.com/photos/3992656/pexels-photo-3992656.jpeg?auto=compress&cs=tinysrgb&w=200',
@@ -21,6 +22,7 @@ const Catalog: React.FC = () => {
     {
       id: 2,
       name: 'Sofia Mikhailova',
+      nickname: 'SofiaStyle',
       specialty: 'Hair Stylist',
       avatar:
         'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=200',
@@ -32,6 +34,7 @@ const Catalog: React.FC = () => {
     {
       id: 3,
       name: 'Diana Volkov',
+      nickname: 'DianaNails',
       specialty: 'Nail Artist',
       avatar:
         'https://images.pexels.com/photos/3373736/pexels-photo-3373736.jpeg?auto=compress&cs=tinysrgb&w=200',
@@ -65,6 +68,7 @@ const Catalog: React.FC = () => {
             key={master.id}
             isPressable
             className="w-full hover:shadow-lg transition-all duration-300"
+            onPress={() => navigate({ to: `/master/${master.nickname}` })}
           >
             <CardBody className="p-4">
               <div className="flex items-center space-x-4">

@@ -6,10 +6,13 @@ import {
   CardHeader,
   Chip,
 } from '@heroui/react';
+import { useNavigate } from '@tanstack/react-router';
 import { Calendar, Smartphone, Upload } from 'lucide-react';
 import React from 'react';
 
 const MasterDashboard: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen p-4">
       <div className="text-center mb-6">
@@ -20,7 +23,11 @@ const MasterDashboard: React.FC = () => {
       </div>
 
       {/* Profile Card */}
-      <Card className="mb-6">
+      <Card
+        className="mb-6 w-full"
+        isPressable
+        onPress={() => navigate({ to: '/master/profile' })}
+      >
         <CardHeader>
           <h2 className="text-lg font-medium">Your Profile</h2>
         </CardHeader>
@@ -69,17 +76,18 @@ const MasterDashboard: React.FC = () => {
             <Smartphone className="w-8 h-8 text-white" />
           </div>
           <h3 className="text-xl font-semibold text-gray-900 mb-2">
-            Create my Telegram Mini App
+            Create Your Own Telegram Mini App
           </h3>
           <p className="text-sm text-gray-600 mb-4">
-            This will allow your clients to open your personal page directly
-            inside Telegram using your own bot.
+            Let clients open your personal page directly inside Telegram —
+            through your own bot. It’s fully yours: your brand, your services,
+            your rules.
           </p>
           <Button
             color="primary"
             size="lg"
             className="bg-gradient-to-r from-pink-500 to-purple-600"
-            // onPress={() => navigate('/master/miniapp/create')}
+            onPress={() => navigate({ to: '/master/miniapp/create' })}
           >
             Get Started
           </Button>

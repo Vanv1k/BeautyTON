@@ -10,14 +10,14 @@ import {
   Textarea,
 } from '@heroui/react';
 import { useNavigate } from '@tanstack/react-router';
-import { ArrowRight, Camera } from 'lucide-react';
+import { ArrowRight, AtSign, Camera } from 'lucide-react';
 import React, { useState } from 'react';
 
 const MasterOnboarding: React.FC = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     profilePhoto: '',
-    telegramUsername: '@elena_beauty',
+    telegramUsername: 'elena_beauty',
     firstName: 'Elena',
     lastName: 'Kozlova',
     serviceCategory: '',
@@ -44,11 +44,9 @@ const MasterOnboarding: React.FC = () => {
 
   return (
     <div className="min-h-screen p-4">
-      <div className="flex items-center mb-6">
-        <h1 className="text-xl font-semibold text-gray-900">
-          Create Your Profile
-        </h1>
-      </div>
+      <h1 className="text-xl font-semibold text-gray-900 mb-6">
+        Create Your Profile
+      </h1>
 
       <Card className="mb-6">
         <CardHeader>
@@ -78,18 +76,16 @@ const MasterOnboarding: React.FC = () => {
           {/* Telegram Username */}
           <Input
             label="Telegram Username"
-            placeholder="@your_username"
             value={formData.telegramUsername}
             onValueChange={(value) =>
               handleInputChange('telegramUsername', value)
             }
-            startContent="@"
+            startContent={<AtSign height="1em" width="1em" />}
           />
 
           {/* First Name */}
           <Input
             label="First Name"
-            placeholder="Enter your first name"
             value={formData.firstName}
             onValueChange={(value) => handleInputChange('firstName', value)}
             isRequired
@@ -98,7 +94,6 @@ const MasterOnboarding: React.FC = () => {
           {/* Last Name */}
           <Input
             label="Last Name"
-            placeholder="Enter your last name"
             value={formData.lastName}
             onValueChange={(value) => handleInputChange('lastName', value)}
             isRequired
@@ -107,7 +102,6 @@ const MasterOnboarding: React.FC = () => {
           {/* Service Category */}
           <Select
             label="Service Category"
-            placeholder="Select your specialty"
             selectedKeys={
               formData.serviceCategory ? [formData.serviceCategory] : []
             }
