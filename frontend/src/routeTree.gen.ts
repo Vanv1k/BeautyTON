@@ -12,8 +12,13 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IsNotMiniappRouteImport } from './routes/is-not-miniapp'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CatalogIndexRouteImport } from './routes/catalog/index'
+import { Route as MasterProfileRouteImport } from './routes/master/profile'
 import { Route as MasterOnboardingRouteImport } from './routes/master/onboarding'
 import { Route as MasterDashboardRouteImport } from './routes/master/dashboard'
+import { Route as MasterMasterIdRouteImport } from './routes/master/$masterId'
+import { Route as MasterMiniappSuccessRouteImport } from './routes/master/miniapp/success'
+import { Route as MasterMiniappCreateRouteImport } from './routes/master/miniapp/create'
+import { Route as MasterMiniappConnectRouteImport } from './routes/master/miniapp/connect'
 
 const IsNotMiniappRoute = IsNotMiniappRouteImport.update({
   id: '/is-not-miniapp',
@@ -30,6 +35,11 @@ const CatalogIndexRoute = CatalogIndexRouteImport.update({
   path: '/catalog/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MasterProfileRoute = MasterProfileRouteImport.update({
+  id: '/master/profile',
+  path: '/master/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MasterOnboardingRoute = MasterOnboardingRouteImport.update({
   id: '/master/onboarding',
   path: '/master/onboarding',
@@ -40,59 +50,114 @@ const MasterDashboardRoute = MasterDashboardRouteImport.update({
   path: '/master/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MasterMasterIdRoute = MasterMasterIdRouteImport.update({
+  id: '/master/$masterId',
+  path: '/master/$masterId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MasterMiniappSuccessRoute = MasterMiniappSuccessRouteImport.update({
+  id: '/master/miniapp/success',
+  path: '/master/miniapp/success',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MasterMiniappCreateRoute = MasterMiniappCreateRouteImport.update({
+  id: '/master/miniapp/create',
+  path: '/master/miniapp/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MasterMiniappConnectRoute = MasterMiniappConnectRouteImport.update({
+  id: '/master/miniapp/connect',
+  path: '/master/miniapp/connect',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/is-not-miniapp': typeof IsNotMiniappRoute
+  '/master/$masterId': typeof MasterMasterIdRoute
   '/master/dashboard': typeof MasterDashboardRoute
   '/master/onboarding': typeof MasterOnboardingRoute
+  '/master/profile': typeof MasterProfileRoute
   '/catalog': typeof CatalogIndexRoute
+  '/master/miniapp/connect': typeof MasterMiniappConnectRoute
+  '/master/miniapp/create': typeof MasterMiniappCreateRoute
+  '/master/miniapp/success': typeof MasterMiniappSuccessRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/is-not-miniapp': typeof IsNotMiniappRoute
+  '/master/$masterId': typeof MasterMasterIdRoute
   '/master/dashboard': typeof MasterDashboardRoute
   '/master/onboarding': typeof MasterOnboardingRoute
+  '/master/profile': typeof MasterProfileRoute
   '/catalog': typeof CatalogIndexRoute
+  '/master/miniapp/connect': typeof MasterMiniappConnectRoute
+  '/master/miniapp/create': typeof MasterMiniappCreateRoute
+  '/master/miniapp/success': typeof MasterMiniappSuccessRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/is-not-miniapp': typeof IsNotMiniappRoute
+  '/master/$masterId': typeof MasterMasterIdRoute
   '/master/dashboard': typeof MasterDashboardRoute
   '/master/onboarding': typeof MasterOnboardingRoute
+  '/master/profile': typeof MasterProfileRoute
   '/catalog/': typeof CatalogIndexRoute
+  '/master/miniapp/connect': typeof MasterMiniappConnectRoute
+  '/master/miniapp/create': typeof MasterMiniappCreateRoute
+  '/master/miniapp/success': typeof MasterMiniappSuccessRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/is-not-miniapp'
+    | '/master/$masterId'
     | '/master/dashboard'
     | '/master/onboarding'
+    | '/master/profile'
     | '/catalog'
+    | '/master/miniapp/connect'
+    | '/master/miniapp/create'
+    | '/master/miniapp/success'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/is-not-miniapp'
+    | '/master/$masterId'
     | '/master/dashboard'
     | '/master/onboarding'
+    | '/master/profile'
     | '/catalog'
+    | '/master/miniapp/connect'
+    | '/master/miniapp/create'
+    | '/master/miniapp/success'
   id:
     | '__root__'
     | '/'
     | '/is-not-miniapp'
+    | '/master/$masterId'
     | '/master/dashboard'
     | '/master/onboarding'
+    | '/master/profile'
     | '/catalog/'
+    | '/master/miniapp/connect'
+    | '/master/miniapp/create'
+    | '/master/miniapp/success'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   IsNotMiniappRoute: typeof IsNotMiniappRoute
+  MasterMasterIdRoute: typeof MasterMasterIdRoute
   MasterDashboardRoute: typeof MasterDashboardRoute
   MasterOnboardingRoute: typeof MasterOnboardingRoute
+  MasterProfileRoute: typeof MasterProfileRoute
   CatalogIndexRoute: typeof CatalogIndexRoute
+  MasterMiniappConnectRoute: typeof MasterMiniappConnectRoute
+  MasterMiniappCreateRoute: typeof MasterMiniappCreateRoute
+  MasterMiniappSuccessRoute: typeof MasterMiniappSuccessRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -118,6 +183,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CatalogIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/master/profile': {
+      id: '/master/profile'
+      path: '/master/profile'
+      fullPath: '/master/profile'
+      preLoaderRoute: typeof MasterProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/master/onboarding': {
       id: '/master/onboarding'
       path: '/master/onboarding'
@@ -132,15 +204,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MasterDashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/master/$masterId': {
+      id: '/master/$masterId'
+      path: '/master/$masterId'
+      fullPath: '/master/$masterId'
+      preLoaderRoute: typeof MasterMasterIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/master/miniapp/success': {
+      id: '/master/miniapp/success'
+      path: '/master/miniapp/success'
+      fullPath: '/master/miniapp/success'
+      preLoaderRoute: typeof MasterMiniappSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/master/miniapp/create': {
+      id: '/master/miniapp/create'
+      path: '/master/miniapp/create'
+      fullPath: '/master/miniapp/create'
+      preLoaderRoute: typeof MasterMiniappCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/master/miniapp/connect': {
+      id: '/master/miniapp/connect'
+      path: '/master/miniapp/connect'
+      fullPath: '/master/miniapp/connect'
+      preLoaderRoute: typeof MasterMiniappConnectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   IsNotMiniappRoute: IsNotMiniappRoute,
+  MasterMasterIdRoute: MasterMasterIdRoute,
   MasterDashboardRoute: MasterDashboardRoute,
   MasterOnboardingRoute: MasterOnboardingRoute,
+  MasterProfileRoute: MasterProfileRoute,
   CatalogIndexRoute: CatalogIndexRoute,
+  MasterMiniappConnectRoute: MasterMiniappConnectRoute,
+  MasterMiniappCreateRoute: MasterMiniappCreateRoute,
+  MasterMiniappSuccessRoute: MasterMiniappSuccessRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
