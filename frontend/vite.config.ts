@@ -17,7 +17,7 @@ export default defineConfig({
   //   environment: 'jsdom',
   // },
   server: {
-    allowedHosts: ['rniyb-195-201-38-37.a.free.pinggy.link'],
+    allowedHosts: ['rnjfi-188-255-102-233.a.free.pinggy.link'],
   },
   resolve: {
     alias: {
