@@ -1,7 +1,9 @@
+import { Button } from '@heroui/react';
 import type { QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Outlet, createRootRouteWithContext } from '@tanstack/react-router';
 
+import { useTheme } from '~/entity/theme';
 import { MiniappInitializer } from '~/features/miniapp';
 import { IS_DEV_DOMAIN, IS_TG_MINIAPP } from '~/shared/config/general';
 
@@ -9,12 +11,40 @@ type MyRouterContext = {
   queryClient: QueryClient;
 };
 
-export const Route = createRootRouteWithContext<MyRouterContext>()({
-  component: () => (
+function RootComponent() {
+  const { isDark, setTheme } = useTheme();
+
+  return (
     <>
-      <Outlet />
+      <div
+        className={`min-h-screen transition-colors duration-700 ${
+          isDark
+            ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white'
+            : 'bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 text-gray-900'
+        }`}
+      >
+        <Outlet />
+      </div>
+      {/* todo: убрать */}
+      <div className="fixed bottom-0 left-0 right-0 z-50">
+        <Button
+          id="theme-toggle"
+          variant="light"
+          size="sm"
+          className="w-full"
+          onPress={() => {
+            setTheme(isDark ? 'light' : 'dark');
+          }}
+        >
+          Toggle Theme
+        </Button>
+      </div>
       {IS_TG_MINIAPP && <MiniappInitializer />}
       {IS_DEV_DOMAIN && <ReactQueryDevtools />}
     </>
-  ),
+  );
+}
+
+export const Route = createRootRouteWithContext<MyRouterContext>()({
+  component: RootComponent,
 });

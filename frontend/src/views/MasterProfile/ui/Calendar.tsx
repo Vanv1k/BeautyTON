@@ -7,7 +7,7 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-  Chip,
+  addToast,
 } from '@heroui/react';
 import {
   format,
@@ -17,7 +17,7 @@ import {
   isSameDay,
   isToday,
 } from 'date-fns';
-import { Calendar as CalendarIcon, Clock, Check } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock } from 'lucide-react';
 import { useState } from 'react';
 
 import { MODAL_MOTION_PROPS } from '../config';
@@ -31,7 +31,6 @@ const Calendar: React.FC = () => {
   const [bookingStep, setBookingStep] = useState<
     'service' | 'time' | 'confirm'
   >('service');
-  const [showSuccess, setShowSuccess] = useState(false);
 
   const services = [
     { id: '1', name: 'Evening Makeup', price: '3500₽', duration: '1h 30m' },
@@ -81,8 +80,24 @@ const Calendar: React.FC = () => {
 
   const handleBooking = () => {
     setShowBookingModal(false);
-    setShowSuccess(true);
-    setTimeout(() => setShowSuccess(false), 3000);
+
+    if (!selectedDate || !selectedService || !selectedTime) {
+      addToast({
+        title: 'Error',
+        description: 'Please complete all steps before confirming.',
+        color: 'danger',
+      });
+      return;
+    }
+
+    addToast({
+      title: 'Booking Confirmed',
+      description: `Your appointment for ${getSelectedServiceDetails()?.name} on ${format(
+        selectedDate,
+        'MMMM d, yyyy',
+      )} at ${selectedTime} has been confirmed.`,
+      color: 'success',
+    });
   };
 
   const getSelectedServiceDetails = () => {
@@ -176,7 +191,7 @@ const Calendar: React.FC = () => {
                     key={service.id}
                     isPressable
                     onPress={() => handleServiceSelect(service.id)}
-                    className="hover:shadow-md transition-shadow"
+                    className="hover:shadow-md transition-shadow w-full"
                   >
                     <CardBody className="p-3">
                       <div className="flex justify-between items-center">
@@ -266,21 +281,6 @@ const Calendar: React.FC = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-
-      {/* Success Notification */}
-      {showSuccess && (
-        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 animate-fade-in">
-          <Chip
-            color="success"
-            variant="solid"
-            size="lg"
-            startContent={<Check className="w-4 h-4" />}
-            className="shadow-lg"
-          >
-            Booking confirmed! Check your Telegram for details.
-          </Chip>
-        </div>
-      )}
     </div>
   );
 };

@@ -1,8 +1,11 @@
-import { HeroUIProvider } from '@heroui/react';
+import { HeroUIProvider, ToastProvider } from '@heroui/react';
 import { RouterProvider } from '@tanstack/react-router';
 import type { Register } from '@tanstack/react-router';
 
 import { QueryProvider } from './QueryProvider';
+
+import { ThemeProvider } from '~/entity/theme';
+import { TOAST_OFFSET, TOAST_PLACEMENT } from '~/shared/config/heroui';
 
 type Props = {
   router: Register['router'];
@@ -12,8 +15,11 @@ export const App: React.FC<Props> = ({ router }) => {
   return (
     <HeroUIProvider>
       <QueryProvider>
-        <RouterProvider router={router} />
+        <ThemeProvider>
+          <RouterProvider router={router} />
+        </ThemeProvider>
       </QueryProvider>
+      <ToastProvider placement={TOAST_PLACEMENT} toastOffset={TOAST_OFFSET} />
     </HeroUIProvider>
   );
 };

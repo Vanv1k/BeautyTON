@@ -31,7 +31,7 @@ const startApp = () => {
   initEruda();
 
   if (IS_TG_MINIAPP) {
-    const { init, swipeBehavior, backButton } = telegramMiniapp;
+    const { init, swipeBehavior, backButton, themeParams } = telegramMiniapp;
     init();
 
     backButton.mount();
@@ -39,6 +39,10 @@ const startApp = () => {
 
     if (swipeBehavior.disableVertical.isAvailable()) {
       swipeBehavior.disableVertical();
+    }
+
+    if (themeParams.mountSync.isAvailable()) {
+      themeParams.mountSync();
     }
   } else if (!IS_DEV_DOMAIN) {
     router.navigate({

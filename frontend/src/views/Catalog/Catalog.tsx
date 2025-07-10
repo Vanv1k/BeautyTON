@@ -46,16 +46,18 @@ const Catalog: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen p-4">
+    <div className="p-4">
       <div className="flex items-center mb-6">
-        <h1 className="text-xl font-semibold text-gray-900">Beauty Masters</h1>
+        <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
+          Beauty Masters
+        </h1>
       </div>
 
       <div className="mb-6">
         <Button
           variant="flat"
           size="lg"
-          className="w-full justify-start bg-gray-100"
+          className="w-full justify-start"
           startContent={<Search className="w-5 h-5" />}
         >
           Search services or masters...
@@ -81,7 +83,7 @@ const Catalog: React.FC = () => {
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between items-start mb-2">
                     <div>
-                      <h3 className="font-semibold text-gray-900">
+                      <h3 className="font-semibold text-gray-900 dark:text-white">
                         {master.name}
                       </h3>
                       <Chip size="sm" color="secondary" variant="flat">
@@ -95,7 +97,7 @@ const Catalog: React.FC = () => {
                           {master.rating}
                         </span>
                       </div>
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-gray-600 dark:text-gray-300">
                         {master.reviews} reviews
                       </span>
                     </div>
@@ -103,8 +105,8 @@ const Catalog: React.FC = () => {
 
                   <div className="flex justify-between items-center">
                     <div className="flex items-center space-x-1">
-                      <MapPin className="w-4 h-4 text-gray-500" />
-                      <span className="text-sm text-gray-600">
+                      <MapPin className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+                      <span className="text-sm text-gray-600 dark:text-gray-300">
                         {master.distance}
                       </span>
                     </div>
