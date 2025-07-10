@@ -44,7 +44,7 @@ const MasterOnboarding: React.FC = () => {
 
   return (
     <div className="min-h-screen p-4">
-      <h1 className="text-xl font-semibold text-gray-900 mb-6">
+      <h1 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
         Create Your Profile
       </h1>
 
@@ -67,7 +67,6 @@ const MasterOnboarding: React.FC = () => {
               variant="flat"
               size="sm"
               startContent={<Camera className="w-4 h-4" />}
-              className="bg-gray-100"
             >
               Upload Photo
             </Button>

@@ -8,8 +8,12 @@ const RoleSelection: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col justify-center p-6">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Who are you?</h1>
-        <p className="text-gray-600">Choose your role to get started</p>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          Who are you?
+        </h1>
+        <p className="text-gray-600 dark:text-gray-300">
+          Choose your role to get started
+        </p>
       </div>
 
       <div className="space-y-4">
@@ -22,10 +26,10 @@ const RoleSelection: React.FC = () => {
             <div className="bg-gradient-to-r from-blue-500 to-cyan-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
               <User className="w-8 h-8 text-white" />
             </div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
               I am a Client
             </h2>
-            <p className="text-gray-600 text-sm">
+            <p className="text-gray-600 dark:text-gray-300 text-sm">
               Find and book beauty services near you
             </p>
           </CardBody>
@@ -40,10 +44,10 @@ const RoleSelection: React.FC = () => {
             <div className="bg-gradient-to-r from-pink-500 to-purple-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
               <Sparkles className="w-8 h-8 text-white" />
             </div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
               I am a Master
             </h2>
-            <p className="text-gray-600 text-sm">
+            <p className="text-gray-600 dark:text-gray-300 text-sm">
               Offer your beauty services and grow your business
             </p>
           </CardBody>

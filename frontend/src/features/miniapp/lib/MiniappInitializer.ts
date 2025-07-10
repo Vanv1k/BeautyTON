@@ -3,14 +3,21 @@ import {
   backButton,
   setDebug,
   useLaunchParams,
+  themeParamsBackgroundColor,
 } from '@telegram-apps/sdk-react';
 import { useEffect } from 'react';
+
+import { useTheme } from '~/entity/theme';
+import { isDarkColor } from '~/shared/lib/color/isDarkColor';
 
 export const MiniappInitializer = () => {
   const router = useRouter();
   const canGoBack = useCanGoBack();
 
+  const { setTheme } = useTheme();
+
   const launchParams = useLaunchParams();
+  const backgroundColor = themeParamsBackgroundColor();
 
   useEffect(() => {
     setDebug(true);
@@ -21,9 +28,11 @@ export const MiniappInitializer = () => {
       });
     }
 
-    // eslint-disable-next-line no-console
-    console.log(launchParams);
-  }, [launchParams, router.history]);
+    if (backgroundColor) {
+      const isDark = isDarkColor(backgroundColor);
+      setTheme(isDark ? 'dark' : 'light');
+    }
+  }, [backgroundColor, launchParams, router.history, setTheme]);
 
   useEffect(() => {
     if (canGoBack) {
