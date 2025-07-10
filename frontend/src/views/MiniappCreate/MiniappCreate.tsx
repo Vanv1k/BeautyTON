@@ -23,7 +23,7 @@ const MiniappCreate: React.FC = () => {
       title: 'Open BotFather',
       content: (
         <div className="text-center space-y-4">
-          <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-6 mb-4">
+          <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-6 mb-4">
             <Avatar
               radius="lg"
               src={botFatherImage}
@@ -152,7 +152,7 @@ const MiniappCreate: React.FC = () => {
         </div>
 
         {/* Step Content */}
-        <Card>
+        <Card className="bg-background/60 dark:bg-default-100/50" isBlurred>
           <CardBody className="p-6">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-300 mb-4">
               {steps[currentStep].title}

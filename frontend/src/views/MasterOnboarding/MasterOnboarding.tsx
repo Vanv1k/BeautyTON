@@ -48,7 +48,7 @@ const MasterOnboarding: React.FC = () => {
         Create Your Profile
       </h1>
 
-      <Card className="mb-6">
+      <Card className="mb-6 ">
         <CardHeader>
           <h2 className="text-lg font-medium">Master Information</h2>
         </CardHeader>

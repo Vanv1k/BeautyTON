@@ -1,3 +1,4 @@
+import { Button } from '@heroui/react';
 import type { QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Outlet, createRootRouteWithContext } from '@tanstack/react-router';
@@ -11,7 +12,7 @@ type MyRouterContext = {
 };
 
 function RootComponent() {
-  const { isDark } = useTheme();
+  const { isDark, setTheme } = useTheme();
 
   return (
     <>
@@ -24,7 +25,20 @@ function RootComponent() {
       >
         <Outlet />
       </div>
-
+      {/* todo: убрать */}
+      <div className="fixed bottom-0 left-0 right-0 z-50">
+        <Button
+          id="theme-toggle"
+          variant="light"
+          size="sm"
+          className="w-full"
+          onPress={() => {
+            setTheme(isDark ? 'light' : 'dark');
+          }}
+        >
+          Toggle Theme
+        </Button>
+      </div>
       {IS_TG_MINIAPP && <MiniappInitializer />}
       {IS_DEV_DOMAIN && <ReactQueryDevtools />}
     </>

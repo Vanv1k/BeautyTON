@@ -1,13 +1,28 @@
 import { Avatar, Button, Chip } from '@heroui/react';
 import { Star, MapPin } from 'lucide-react';
+import { useCallback } from 'react';
 
 const Header: React.FC = () => {
-  const scrollToCalendar = () => {
-    document.getElementById('calendar')?.scrollIntoView({ behavior: 'smooth' });
-  };
+  // todo: use a more robust way to scroll to the calendar section
+  // e.g., using refs or a more structured state management solution
+  const scrollToCalendar = useCallback(() => {
+    const header = document.getElementById('masterProfileHeader');
+    const calendar = document.getElementById('calendar');
+    if (calendar && header) {
+      const headerHeight = (header as HTMLElement).offsetHeight;
+      const calendarTop = calendar.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({
+        top: calendarTop - headerHeight,
+        behavior: 'smooth',
+      });
+    }
+  }, []);
 
   return (
-    <div className="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border-b border-gray-200/50 dark:border-gray-700/50">
+    <div
+      id="masterProfileHeader"
+      className="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border-b border-gray-200/50 dark:border-gray-700/50"
+    >
       <div className="p-4">
         <div className="flex items-center space-x-4 mb-4">
           <Avatar
