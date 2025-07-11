@@ -7,6 +7,8 @@ require (
 	github.com/aws/aws-sdk-go-v2/config v1.29.17
 	github.com/aws/aws-sdk-go-v2/credentials v1.17.70
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.83.0
+	github.com/google/uuid v1.6.0
+	github.com/gorilla/mux v1.8.1
 	gorm.io/driver/postgres v1.6.0
 	gorm.io/gorm v1.30.0
 )
