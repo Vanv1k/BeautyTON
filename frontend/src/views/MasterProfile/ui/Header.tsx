@@ -1,26 +1,15 @@
 import { Avatar, Button, Chip } from '@heroui/react';
 import { Star, MapPin } from 'lucide-react';
-import { useCallback } from 'react';
 
-const Header: React.FC = () => {
-  // todo: use a more robust way to scroll to the calendar section
-  // e.g., using refs or a more structured state management solution
-  const scrollToCalendar = useCallback(() => {
-    const header = document.getElementById('masterProfileHeader');
-    const calendar = document.getElementById('calendar');
-    if (calendar && header) {
-      const headerHeight = (header as HTMLElement).offsetHeight;
-      const calendarTop = calendar.getBoundingClientRect().top + window.scrollY;
-      window.scrollTo({
-        top: calendarTop - headerHeight,
-        behavior: 'smooth',
-      });
-    }
-  }, []);
+type Props = {
+  setHeaderRef: (ref: HTMLDivElement | null) => void;
+  onScrollToCalendar: VoidFunction;
+};
 
+const Header: React.FC<Props> = ({ setHeaderRef, onScrollToCalendar }) => {
   return (
     <div
-      id="masterProfileHeader"
+      ref={setHeaderRef}
       className="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border-b border-gray-200/50 dark:border-gray-700/50"
     >
       <div className="p-4">
@@ -68,7 +57,7 @@ const Header: React.FC = () => {
           color="primary"
           size="lg"
           className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 font-semibold"
-          onPress={scrollToCalendar}
+          onPress={onScrollToCalendar}
         >
           Book Now
         </Button>

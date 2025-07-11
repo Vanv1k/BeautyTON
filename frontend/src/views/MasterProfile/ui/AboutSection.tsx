@@ -12,14 +12,14 @@ const AboutSection: React.FC = () => {
   return (
     <div className="p-4 border-b border-gray-200/50 dark:border-gray-700/50">
       <div className="space-y-3">
-        <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+        <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mb-0">
           {isExpanded ? fullText : shortText}
         </p>
 
         <Button
           variant="light"
           size="sm"
-          className="p-0 h-auto text-pink-600 dark:text-pink-400"
+          className="p-0 h-auto text-pink-600 dark:text-pink-400 mb-4"
           onPress={() => setIsExpanded(!isExpanded)}
           endContent={
             isExpanded ? (

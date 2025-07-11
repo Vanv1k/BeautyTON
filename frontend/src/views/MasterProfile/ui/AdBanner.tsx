@@ -1,5 +1,5 @@
 import { Card, CardBody, Button, Chip } from '@heroui/react';
-import { Sparkles, Gift } from 'lucide-react';
+import { Gift } from 'lucide-react';
 
 const AdBanner: React.FC = () => {
   return (
@@ -29,7 +29,6 @@ const AdBanner: React.FC = () => {
             <Button
               size="sm"
               className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium"
-              endContent={<Sparkles className="w-3 h-3" />}
             >
               Explore
             </Button>

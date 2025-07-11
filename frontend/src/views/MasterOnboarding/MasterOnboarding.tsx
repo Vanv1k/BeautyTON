@@ -4,14 +4,15 @@ import {
   Card,
   CardBody,
   CardHeader,
-  Input,
-  Select,
   SelectItem,
-  Textarea,
 } from '@heroui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { ArrowRight, AtSign, Camera } from 'lucide-react';
 import React, { useState } from 'react';
+
+import { Input } from '~/shared/ui/Input';
+import { Select } from '~/shared/ui/Select';
+import { Textarea } from '~/shared/ui/Textarea';
 
 const MasterOnboarding: React.FC = () => {
   const navigate = useNavigate();
@@ -48,7 +49,7 @@ const MasterOnboarding: React.FC = () => {
         Create Your Profile
       </h1>
 
-      <Card className="mb-6 ">
+      <Card className="mb-6 bg-white/80 dark:bg-gray-800/50" isBlurred>
         <CardHeader>
           <h2 className="text-lg font-medium">Master Information</h2>
         </CardHeader>

@@ -20,7 +20,7 @@ const RoleSelection: React.FC = () => {
         <Card
           isPressable
           onPress={() => navigate({ to: '/catalog' })}
-          className="w-full hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+          className="w-full hover:shadow-lg transition-all duration-300 transform hover:scale-105 bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm"
         >
           <CardBody className="p-6 text-center">
             <div className="bg-gradient-to-r from-blue-500 to-cyan-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -38,7 +38,7 @@ const RoleSelection: React.FC = () => {
         <Card
           isPressable
           onPress={() => navigate({ to: '/master/onboarding' })}
-          className="w-full hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+          className="w-full hover:shadow-lg transition-all duration-300 transform hover:scale-105 bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm"
         >
           <CardBody className="p-6 text-center">
             <div className="bg-gradient-to-r from-pink-500 to-purple-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
