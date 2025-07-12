@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IsNotMiniappRouteImport } from './routes/is-not-miniapp'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CatalogIndexRouteImport } from './routes/catalog/index'
+import { Route as MasterScheduleRouteImport } from './routes/master/schedule'
 import { Route as MasterProfileRouteImport } from './routes/master/profile'
 import { Route as MasterOnboardingRouteImport } from './routes/master/onboarding'
 import { Route as MasterDashboardRouteImport } from './routes/master/dashboard'
@@ -33,6 +34,11 @@ const IndexRoute = IndexRouteImport.update({
 const CatalogIndexRoute = CatalogIndexRouteImport.update({
   id: '/catalog/',
   path: '/catalog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MasterScheduleRoute = MasterScheduleRouteImport.update({
+  id: '/master/schedule',
+  path: '/master/schedule',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MasterProfileRoute = MasterProfileRouteImport.update({
@@ -78,6 +84,7 @@ export interface FileRoutesByFullPath {
   '/master/dashboard': typeof MasterDashboardRoute
   '/master/onboarding': typeof MasterOnboardingRoute
   '/master/profile': typeof MasterProfileRoute
+  '/master/schedule': typeof MasterScheduleRoute
   '/catalog': typeof CatalogIndexRoute
   '/master/miniapp/connect': typeof MasterMiniappConnectRoute
   '/master/miniapp/create': typeof MasterMiniappCreateRoute
@@ -90,6 +97,7 @@ export interface FileRoutesByTo {
   '/master/dashboard': typeof MasterDashboardRoute
   '/master/onboarding': typeof MasterOnboardingRoute
   '/master/profile': typeof MasterProfileRoute
+  '/master/schedule': typeof MasterScheduleRoute
   '/catalog': typeof CatalogIndexRoute
   '/master/miniapp/connect': typeof MasterMiniappConnectRoute
   '/master/miniapp/create': typeof MasterMiniappCreateRoute
@@ -103,6 +111,7 @@ export interface FileRoutesById {
   '/master/dashboard': typeof MasterDashboardRoute
   '/master/onboarding': typeof MasterOnboardingRoute
   '/master/profile': typeof MasterProfileRoute
+  '/master/schedule': typeof MasterScheduleRoute
   '/catalog/': typeof CatalogIndexRoute
   '/master/miniapp/connect': typeof MasterMiniappConnectRoute
   '/master/miniapp/create': typeof MasterMiniappCreateRoute
@@ -117,6 +126,7 @@ export interface FileRouteTypes {
     | '/master/dashboard'
     | '/master/onboarding'
     | '/master/profile'
+    | '/master/schedule'
     | '/catalog'
     | '/master/miniapp/connect'
     | '/master/miniapp/create'
@@ -129,6 +139,7 @@ export interface FileRouteTypes {
     | '/master/dashboard'
     | '/master/onboarding'
     | '/master/profile'
+    | '/master/schedule'
     | '/catalog'
     | '/master/miniapp/connect'
     | '/master/miniapp/create'
@@ -141,6 +152,7 @@ export interface FileRouteTypes {
     | '/master/dashboard'
     | '/master/onboarding'
     | '/master/profile'
+    | '/master/schedule'
     | '/catalog/'
     | '/master/miniapp/connect'
     | '/master/miniapp/create'
@@ -154,6 +166,7 @@ export interface RootRouteChildren {
   MasterDashboardRoute: typeof MasterDashboardRoute
   MasterOnboardingRoute: typeof MasterOnboardingRoute
   MasterProfileRoute: typeof MasterProfileRoute
+  MasterScheduleRoute: typeof MasterScheduleRoute
   CatalogIndexRoute: typeof CatalogIndexRoute
   MasterMiniappConnectRoute: typeof MasterMiniappConnectRoute
   MasterMiniappCreateRoute: typeof MasterMiniappCreateRoute
@@ -181,6 +194,13 @@ declare module '@tanstack/react-router' {
       path: '/catalog'
       fullPath: '/catalog'
       preLoaderRoute: typeof CatalogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/master/schedule': {
+      id: '/master/schedule'
+      path: '/master/schedule'
+      fullPath: '/master/schedule'
+      preLoaderRoute: typeof MasterScheduleRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/master/profile': {
@@ -242,6 +262,7 @@ const rootRouteChildren: RootRouteChildren = {
   MasterDashboardRoute: MasterDashboardRoute,
   MasterOnboardingRoute: MasterOnboardingRoute,
   MasterProfileRoute: MasterProfileRoute,
+  MasterScheduleRoute: MasterScheduleRoute,
   CatalogIndexRoute: CatalogIndexRoute,
   MasterMiniappConnectRoute: MasterMiniappConnectRoute,
   MasterMiniappCreateRoute: MasterMiniappCreateRoute,
