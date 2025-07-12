@@ -97,7 +97,7 @@ const NearbyStylists: React.FC = () => {
         {displayedStylists.map((stylist) => (
           <Card
             key={stylist.id}
-            className="flex-shrink-0 w-48 bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 hover:shadow-lg transition-all duration-300"
+            className="flex-shrink-0 w-48 bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 shadow-sm hover:shadow-lg transition-all duration-300"
             isPressable
           >
             <CardBody className="p-3 text-center">
@@ -107,7 +107,12 @@ const NearbyStylists: React.FC = () => {
                 {stylist.name}
               </h4>
 
-              <Chip size="sm" variant="flat" color="secondary" className="mb-2">
+              <Chip
+                size="sm"
+                variant="flat"
+                color="secondary"
+                className="mb-2 mx-auto"
+              >
                 {stylist.specialty}
               </Chip>
 

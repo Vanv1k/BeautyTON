@@ -1,7 +1,11 @@
 import { Card, CardBody, Button, Image, Chip } from '@heroui/react';
 import { Clock, Star } from 'lucide-react';
 
-const Services: React.FC = () => {
+type Props = {
+  onScrollToCalendar: VoidFunction;
+};
+
+const Services: React.FC<Props> = ({ onScrollToCalendar }) => {
   const services = [
     {
       id: 2,
@@ -35,10 +39,6 @@ const Services: React.FC = () => {
     },
   ];
 
-  const scrollToCalendar = () => {
-    document.getElementById('calendar')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
     <div className="p-4 border-b border-gray-200/50 dark:border-gray-700/50">
       <h2 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
@@ -51,7 +51,7 @@ const Services: React.FC = () => {
             key={service.id}
             className="w-full bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 hover:shadow-lg transition-all duration-300"
             isPressable
-            onPress={scrollToCalendar}
+            onPress={onScrollToCalendar}
           >
             <CardBody className="p-3">
               <div className="flex space-x-3">
@@ -101,7 +101,7 @@ const Services: React.FC = () => {
                     color="primary"
                     variant="flat"
                     className="bg-gradient-to-r from-pink-500/20 to-purple-600/20 border border-pink-300/50 dark:border-pink-400/50 text-pink-700 dark:text-pink-300"
-                    onPress={scrollToCalendar}
+                    onPress={onScrollToCalendar}
                   >
                     Book Now
                   </Button>

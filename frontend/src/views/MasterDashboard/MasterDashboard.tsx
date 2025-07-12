@@ -1,108 +1,158 @@
-import {
-  Avatar,
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Chip,
-} from '@heroui/react';
+import { useDisclosure } from '@heroui/react';
 import { useNavigate } from '@tanstack/react-router';
-import { Calendar, Smartphone, Upload } from 'lucide-react';
-import React from 'react';
+import React, { useState } from 'react';
+
+import {
+  DailyHeroPanel,
+  MyStatus,
+  QuickTools,
+  TimeSlotModal,
+  TimeSlots,
+  UpcomingDays,
+  WalletCard,
+} from './ui';
+
+type TimeSlot = {
+  time: string;
+  status: 'booked' | 'free' | 'inactive';
+  client?: string | null;
+  service?: string | null;
+};
 
 const MasterDashboard: React.FC = () => {
   const navigate = useNavigate();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<TimeSlot | null>(
+    null,
+  );
+
+  // Mock data
+  const todayDate = new Date().toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+  });
+  const todayAppointments = 3;
+  const totalSlots = 6; // Total available slots for today
+  const hasMiniApp = false;
+  const miniAppVisits = 127;
+  const isWalletConnected = true;
+  const isDayOff = false; // Set to true to see empty state
+  const currentHour = new Date().getHours();
+
+  // Constants
+  const SLOT_INTERVAL = 0.5; // 30 minute intervals
+  const WORK_START_HOUR = 8;
+  const WORK_END_HOUR = 22;
+
+  // Mock time slots for today (08:00-22:00) with 30-minute intervals
+  const timeSlots: TimeSlot[] = Array.from(
+    { length: (WORK_END_HOUR - WORK_START_HOUR) / SLOT_INTERVAL },
+    (_, i) => {
+      const totalMinutes = WORK_START_HOUR * 60 + i * (SLOT_INTERVAL * 60);
+      const hour = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+      const currentTotalMinutes = currentHour * 60 + new Date().getMinutes();
+      const isPast = totalMinutes < currentTotalMinutes;
+      const random1 = Math.random();
+      const random2 = Math.random();
+
+      let status: 'booked' | 'free' | 'inactive';
+      if (isPast) {
+        status = random1 > 0.6 ? 'booked' : 'inactive';
+      } else {
+        status = random1 > 0.7 ? 'booked' : random2 > 0.4 ? 'free' : 'inactive';
+      }
+
+      const clients = ['Anna K.', 'Maria S.', 'Sofia P.'];
+      const services = ['Brow Shaping', 'Evening Makeup', 'Bridal Look'];
+
+      return {
+        time: `${hour.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`,
+        status,
+        client:
+          status === 'booked'
+            ? clients[Math.floor(Math.random() * clients.length)]
+            : null,
+        service:
+          status === 'booked'
+            ? services[Math.floor(Math.random() * services.length)]
+            : null,
+      };
+    },
+  );
+
+  // Mock upcoming days
+  const upcomingDays = Array.from({ length: 8 }, (_, i) => {
+    const date = new Date();
+    date.setDate(date.getDate() + i + 1);
+    const bookings = Math.floor(Math.random() * 5);
+    const busyness: 'free' | 'moderate' | 'busy' =
+      bookings === 0 ? 'free' : bookings <= 2 ? 'moderate' : 'busy';
+
+    return {
+      weekday: date.toLocaleDateString('en-US', { weekday: 'short' }),
+      date: date.getDate(),
+      bookings,
+      busyness,
+      fullDate: date.toISOString().split('T')[0],
+    };
+  });
+
+  const handleTimeSlotPress = (timeSlot: TimeSlot) => {
+    setSelectedTimeSlot(timeSlot);
+    onOpen();
+  };
 
   return (
-    <div className="min-h-screen p-4">
-      <div className="text-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">
-          Welcome, Elena! 👋
-        </h1>
-        <p className="text-gray-600">Let's set up your beauty business</p>
-      </div>
+    <div className="max-w-md mx-auto relative min-h-screen">
+      <main className="p-4 space-y-6 pb-20">
+        {/* Block 1 - Daily Hero Panel */}
+        <DailyHeroPanel
+          todayDate={todayDate}
+          todayAppointments={todayAppointments}
+          totalSlots={totalSlots}
+        />
 
-      {/* Profile Card */}
-      <Card
-        className="mb-6 w-full"
-        isPressable
-        onPress={() => navigate({ to: '/master/profile' })}
-      >
-        <CardHeader>
-          <h2 className="text-lg font-medium">Your Profile</h2>
-        </CardHeader>
-        <CardBody>
-          <div className="flex items-center space-x-4">
-            <Avatar
-              src="https://images.pexels.com/photos/3992656/pexels-photo-3992656.jpeg?auto=compress&cs=tinysrgb&w=200"
-              size="lg"
-            />
-            <div className="flex-1">
-              <h3 className="font-semibold text-gray-900">Elena Kozlova</h3>
-              <p className="text-sm text-gray-600">@elena_beauty</p>
-              <Chip size="sm" color="secondary" variant="flat" className="mt-1">
-                Makeup Artist
-              </Chip>
-            </div>
-          </div>
-        </CardBody>
-      </Card>
+        {/* Block 2 - Time Slots for Today */}
+        <TimeSlots
+          isDayOff={isDayOff}
+          timeSlots={timeSlots}
+          currentHour={currentHour}
+          workStartHour={WORK_START_HOUR}
+          workEndHour={WORK_END_HOUR}
+          slotInterval={SLOT_INTERVAL}
+          onTimeSlotPress={handleTimeSlotPress}
+        />
 
-      {/* Action Buttons */}
-      <div className="space-y-3 mb-8">
-        <Button
-          variant="flat"
-          size="lg"
-          className="w-full justify-start bg-gray-100"
-          startContent={<Upload className="w-5 h-5" />}
-        >
-          Upload Portfolio
-        </Button>
+        {/* Upcoming Days */}
+        <UpcomingDays
+          upcomingDays={upcomingDays}
+          onDayPress={() => navigate({ to: '/master/dashboard' })}
+        />
 
-        <Button
-          variant="flat"
-          size="lg"
-          className="w-full justify-start bg-gray-100"
-          startContent={<Calendar className="w-5 h-5" />}
-        >
-          Set Work Schedule
-        </Button>
-      </div>
+        {/* My Status */}
+        <MyStatus
+          hasMiniApp={hasMiniApp}
+          miniAppVisits={miniAppVisits}
+          onViewProfile={() => navigate({ to: '/master/profile' })}
+          onManageMiniApp={() => navigate({ to: '/master/miniapp/create' })}
+          onCreateMiniApp={() => navigate({ to: '/master/miniapp/create' })}
+        />
 
-      {/* Main CTA */}
-      <Card className="bg-gradient-to-r from-pink-500/10 to-purple-500/10 border border-pink-200 mb-4">
-        <CardBody className="text-center p-6">
-          <div className="bg-gradient-to-r from-pink-500 to-purple-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Smartphone className="w-8 h-8 text-white" />
-          </div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">
-            Create Your Own Telegram Mini App
-          </h3>
-          <p className="text-sm text-gray-600 mb-4">
-            Let clients open your personal page directly inside Telegram —
-            through your own bot. It’s fully yours: your brand, your services,
-            your rules.
-          </p>
-          <Button
-            color="primary"
-            size="lg"
-            className="bg-gradient-to-r from-pink-500 to-purple-600"
-            onPress={() => navigate({ to: '/master/miniapp/create' })}
-          >
-            Get Started
-          </Button>
-        </CardBody>
-      </Card>
+        {/* Quick Tools */}
+        <QuickTools />
 
-      <div className="text-center">
-        <p className="text-xs text-gray-500">
-          Your mini app will be available at:
-          <br />
-          <span className="font-mono">
-            miniapp.beautyton.com/masters/elena-kozlova
-          </span>
-        </p>
-      </div>
+        {/* TON Wallet */}
+        <WalletCard isWalletConnected={isWalletConnected} />
+      </main>
+
+      {/* Time Slot Modal */}
+      <TimeSlotModal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        selectedTimeSlot={selectedTimeSlot}
+      />
     </div>
   );
 };

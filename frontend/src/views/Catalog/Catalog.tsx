@@ -69,8 +69,9 @@ const Catalog: React.FC = () => {
           <Card
             key={master.id}
             isPressable
-            className="w-full hover:shadow-lg transition-all duration-300"
+            className="w-full hover:shadow-lg transition-all duration-300 bg-white/80 dark:bg-gray-800/50"
             onPress={() => navigate({ to: `/master/${master.nickname}` })}
+            isBlurred
           >
             <CardBody className="p-4">
               <div className="flex items-center space-x-4">

@@ -22,7 +22,11 @@ import { useState } from 'react';
 
 import { MODAL_MOTION_PROPS } from '../config';
 
-const Calendar: React.FC = () => {
+type Props = {
+  setCalendarRef: (ref: HTMLDivElement | null) => void;
+};
+
+const Calendar: React.FC<Props> = ({ setCalendarRef }) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedService, setSelectedService] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
@@ -106,7 +110,7 @@ const Calendar: React.FC = () => {
 
   return (
     <div
-      id="calendar"
+      ref={setCalendarRef}
       className="p-4 border-b border-gray-200/50 dark:border-gray-700/50"
     >
       <div className="flex items-center space-x-2 mb-4">

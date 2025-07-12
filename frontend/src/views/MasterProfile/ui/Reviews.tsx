@@ -110,7 +110,7 @@ const Reviews: React.FC = () => {
         {displayedReviews.map((review) => (
           <Card
             key={review.id}
-            className="flex-shrink-0 w-64 bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50"
+            className="flex-shrink-0 w-64 bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 shadow-sm"
           >
             <CardBody className="p-3">
               <div className="flex items-center space-x-3 mb-2">

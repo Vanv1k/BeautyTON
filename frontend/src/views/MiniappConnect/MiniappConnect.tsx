@@ -1,14 +1,9 @@
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  Input,
-  Button,
-  Alert,
-} from '@heroui/react';
+import { Card, CardBody, CardHeader, Button, Alert } from '@heroui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { Loader } from 'lucide-react';
 import React, { useState } from 'react';
+
+import { Input } from '~/shared/ui/Input';
 
 const MiniappConnect: React.FC = () => {
   const navigate = useNavigate();
@@ -34,7 +29,7 @@ const MiniappConnect: React.FC = () => {
           Connect Your Bot
         </h1>
 
-        <Card className="mb-6">
+        <Card className="mb-6 bg-white/80 dark:bg-gray-800/50" isBlurred>
           <CardHeader>
             <h2 className="text-lg font-medium">Bot Configuration</h2>
           </CardHeader>
