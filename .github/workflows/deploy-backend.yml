@@ -1,4 +1,4 @@
-name: Deploy Backend
+name: Deploy Backend Binary
 
 on:
   push:
@@ -14,38 +14,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.22"
+
+      - name: Build binary
+        run: |
+          cd backend
+          GOOS=linux GOARCH=amd64 go build -o app ./cmd
+
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.7.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Deploy Backend
+      - name: Upload binary to server and restart
         run: |
-            DEPLOY_TARGET="${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}"
-            if [[ $GITHUB_REF == 'refs/heads/develop' ]]; then
-              ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET bash -c "'
-                cd /var/www/beautyton/backend-dev || { mkdir -p /var/www/beautyton/backend-dev; cd /var/www/beautyton/backend-dev; git clone git@github.com:Vanv1k/BeautyTON.git .; }
-                cd /var/www/beautyton/backend-dev
-                git fetch origin
-                git checkout develop
-                git reset --hard origin/develop
-                cd backend
-                go build -o ../app ./cmd
-                chmod +x ../app
-                systemctl daemon-reload
-                systemctl restart backend-dev
-              '"
-            elif [[ $GITHUB_REF == 'refs/heads/main' ]]; then
-              ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET bash -c "'
-                cd /var/www/beautyton/backend-prod || { mkdir -p /var/www/beautyton/backend-prod; cd /var/www/beautyton/backend-prod; git clone git@github.com:Vanv1k/BeautyTON.git .; }
-                cd /var/www/beautyton/backend-prod
-                git fetch origin
-                git checkout main
-                git reset --hard origin/main
-                cd backend
-                go build -o ../app ./cmd
-                chmod +x ../app
-                systemctl daemon-reload
-                systemctl restart backend-prod
-              '"
-            fi
+          if [[ $GITHUB_REF == 'refs/heads/develop' ]]; then
+            scp backend/app ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/var/www/beautyton/backend-dev/app
+            ssh -o StrictHostKeyChecking=no ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "chmod +x /var/www/beautyton/backend-dev/app && systemctl restart backend-dev"
+          elif [[ $GITHUB_REF == 'refs/heads/main' ]]; then
+            scp backend/app ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/var/www/beautyton/backend-prod/app
+            ssh -o StrictHostKeyChecking=no ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "chmod +x /var/www/beautyton/backend-prod/app && systemctl restart backend-prod"
+          fi
