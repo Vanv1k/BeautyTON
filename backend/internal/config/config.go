@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"os"
 	"strconv"
 	"time"
@@ -22,9 +23,9 @@ func Load() *Config {
 			Password:        getEnv("DB_PASSWORD", "password"),
 			DBName:          getEnv("DB_NAME", "beautyton"),
 			SSLMode:         getEnv("DB_SSLMODE", "disable"),
-			MaxOpenConns:    strconv.Atoi(getEnv("DB_MAX_OPEN_CONNS", "100")),
-			MaxIdleConns:    strconv.Atoi(getEnv("DB_MAX_IDLE_CONNS", "10")),
-			ConnMaxLifetime: time.ParseDuration(getEnv("DB_CONN_MAX_LIFETIME", "1h")),
+			MaxOpenConns:    mustAtoi(getEnv("DB_MAX_OPEN_CONNS", "100")),
+			MaxIdleConns:    mustAtoi(getEnv("DB_MAX_IDLE_CONNS", "10")),
+			ConnMaxLifetime: mustParseDuration(getEnv("DB_CONN_MAX_LIFETIME", "1h")),
 		},
 		S3: S3Config{
 			AccessKeyID:     getEnv("AWS_ACCESS_KEY_ID", ""),
@@ -36,9 +37,26 @@ func Load() *Config {
 	}
 }
 
-func getEnv(key string, defaultVal string) string {
-	if value, ok := os.LookupEnv(key); ok {
-		return value
+func getEnv(key, fallback string) string {
+	val := os.Getenv(key)
+	if val == "" {
+		return fallback
 	}
-	return defaultVal
+	return val
+}
+
+func mustAtoi(val string) int {
+	i, err := strconv.Atoi(val)
+	if err != nil {
+		panic(fmt.Sprintf("invalid int value: %s, err: %v", val, err))
+	}
+	return i
+}
+
+func mustParseDuration(val string) time.Duration {
+	d, err := time.ParseDuration(val)
+	if err != nil {
+		panic(fmt.Sprintf("invalid duration value: %s, err: %v", val, err))
+	}
+	return d
 }
