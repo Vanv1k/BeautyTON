@@ -23,7 +23,7 @@ func Load() *Config {
 			Password:        getEnv("DB_PASSWORD", "password"),
 			DBName:          getEnv("DB_NAME", "beautyton"),
 			SSLMode:         getEnv("DB_SSLMODE", "disable"),
-			MaxOpenConns:    mustAtoi(getEnv("DB_MAX_OPEN_CONNS", "100")),
+			MaxOpenConns:    mustAtoi(getEnv("DB_MAX_OPEN_CONNS", "150")),
 			MaxIdleConns:    mustAtoi(getEnv("DB_MAX_IDLE_CONNS", "10")),
 			ConnMaxLifetime: mustParseDuration(getEnv("DB_CONN_MAX_LIFETIME", "1h")),
 		},
