@@ -29,6 +29,11 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+
+      - name: Add host to known_hosts
+        run: |
+          ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+
       - name: Upload binary to server and restart
         run: |
           if [[ $GITHUB_REF == 'refs/heads/develop' ]]; then
