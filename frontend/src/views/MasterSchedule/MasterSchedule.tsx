@@ -174,11 +174,42 @@ const MasterSchedule = () => {
     setNewSlotData(null);
   }, []);
 
+  // Function to determine day status for calendar
+  const getDayStatus = useCallback(
+    (date: Date) => {
+      const dateStr = date.toISOString().split('T')[0];
+      const daySlots = mockSlots.filter((slot) => slot.date === dateStr);
+
+      if (daySlots.length === 0) {
+        return 'inactive' as const;
+      }
+
+      const bookedSlots = daySlots.filter((slot) => slot.status === 'booked');
+      const totalWorkSlots = daySlots.filter((slot) => slot.status !== 'past');
+
+      if (totalWorkSlots.length === 0) {
+        return 'inactive' as const;
+      }
+
+      const occupancyRate = bookedSlots.length / totalWorkSlots.length;
+
+      if (occupancyRate === 0) {
+        return 'free' as const;
+      } else if (occupancyRate <= 0.5) {
+        return 'light' as const;
+      } else {
+        return 'heavy' as const;
+      }
+    },
+    [mockSlots],
+  );
+
   return (
     <div className="max-w-md mx-auto min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">
       <WeeklyHeader
         selectedDate={selectedDate}
         onDateChange={handleDateChange}
+        getDayStatus={getDayStatus}
       />
 
       <main className="px-4 pb-20">

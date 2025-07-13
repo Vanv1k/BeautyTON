@@ -11,7 +11,7 @@ import {
 import { MessageCircle, Edit, X, Calendar, Clock, User } from 'lucide-react';
 import { useCallback } from 'react';
 
-import type { TimeSlot } from '../MasterSchedule';
+import type { TimeSlot } from '../../MasterSchedule';
 
 type Props = {
   isOpen: boolean;

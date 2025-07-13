@@ -1,13 +1,21 @@
 import { Button } from '@heroui/react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useMemo, useCallback } from 'react';
+import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
+import { useMemo, useCallback, useState } from 'react';
+
+import { CalendarModal } from './modal';
 
 type Props = {
   selectedDate: Date;
   onDateChange: (date: Date) => void;
+  getDayStatus?: (date: Date) => 'free' | 'light' | 'heavy' | 'inactive';
 };
 
-const WeeklyHeader: React.FC<Props> = ({ selectedDate, onDateChange }) => {
+const WeeklyHeader: React.FC<Props> = ({
+  selectedDate,
+  onDateChange,
+  getDayStatus,
+}) => {
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const weekDays = useMemo(() => {
     const startOfWeek = new Date(selectedDate);
     const day = startOfWeek.getDay();
@@ -59,9 +67,20 @@ const WeeklyHeader: React.FC<Props> = ({ selectedDate, onDateChange }) => {
     onDateChange(newDate);
   }, [selectedDate, onDateChange]);
 
-  const goToToday = useCallback(() => {
-    onDateChange(new Date());
-  }, [onDateChange]);
+  const openCalendar = useCallback(() => {
+    setIsCalendarOpen(true);
+  }, []);
+
+  const closeCalendar = useCallback(() => {
+    setIsCalendarOpen(false);
+  }, []);
+
+  const handleDateSelect = useCallback(
+    (date: Date) => {
+      onDateChange(date);
+    },
+    [onDateChange],
+  );
 
   const handleDayClick = useCallback(
     (date: Date) => {
@@ -96,10 +115,11 @@ const WeeklyHeader: React.FC<Props> = ({ selectedDate, onDateChange }) => {
           <Button
             variant="flat"
             size="sm"
-            onPress={goToToday}
+            onPress={openCalendar}
+            startContent={<Calendar className="w-4 h-4" />}
             className="bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
           >
-            Today
+            Calendar
           </Button>
 
           <Button
@@ -145,6 +165,14 @@ const WeeklyHeader: React.FC<Props> = ({ selectedDate, onDateChange }) => {
           })}
         </div>
       </div>
+
+      <CalendarModal
+        isOpen={isCalendarOpen}
+        onClose={closeCalendar}
+        selectedDate={selectedDate}
+        onDateSelect={handleDateSelect}
+        getDayStatus={getDayStatus}
+      />
     </div>
   );
 };
