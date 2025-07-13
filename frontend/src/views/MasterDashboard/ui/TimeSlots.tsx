@@ -1,4 +1,5 @@
 import { Button, Card, CardBody, CardHeader } from '@heroui/react';
+import { useNavigate } from '@tanstack/react-router';
 import { Calendar } from 'lucide-react';
 import { memo, useCallback } from 'react';
 
@@ -28,6 +29,8 @@ const TimeSlots: React.FC<Props> = ({
   slotInterval,
   onTimeSlotPress,
 }) => {
+  const navigate = useNavigate();
+
   // Calculate current time position and slot index
   const calculateTimePosition = useCallback(() => {
     const currentTotalMinutes = currentHour * 60 + new Date().getMinutes();
@@ -66,8 +69,16 @@ const TimeSlots: React.FC<Props> = ({
   );
   return (
     <Card className="bg-white/80 dark:bg-gray-800/50" isBlurred>
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between">
         <h2 className="text-lg font-medium">Today's Schedule</h2>
+        <Button
+          onPress={() => navigate({ to: '/master/schedule' })}
+          variant="light"
+          size="sm"
+          className="text-pink-600 dark:text-pink-400"
+        >
+          View Schedule
+        </Button>
       </CardHeader>
       <CardBody className="pt-0">
         {isDayOff ? (

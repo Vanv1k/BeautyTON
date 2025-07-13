@@ -1,4 +1,5 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useSearch } from '@tanstack/react-router';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 
 import {
   BookingDetailModal,
@@ -6,6 +7,8 @@ import {
   SlotCreationModal,
   WeeklyHeader,
 } from './ui';
+
+import { parseDateOrToday } from '~/shared/lib/date/parseDateOrToday';
 
 // Mock data types
 export type BookingStatus = 'booked' | 'free' | 'past';
@@ -37,14 +40,18 @@ export const WORK_START_HOUR = 8;
 export const WORK_END_HOUR = 22;
 
 const MasterSchedule = () => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const search = useSearch({ from: '/master/schedule' });
+
+  const [selectedDate, setSelectedDate] = useState(
+    parseDateOrToday(search.date),
+  );
   const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  const [isCreationModalOpen, setIsCreationModalOpen] = useState(false);
   const [newSlotData, setNewSlotData] = useState<{
     date: string;
     time: string;
   } | null>(null);
+  const [isCreationModalOpen, setIsCreationModalOpen] = useState(false);
 
   // Mock data - in real app this would come from backend
   const mockSlots: TimeSlot[] = useMemo(() => {
@@ -107,6 +114,29 @@ const MasterSchedule = () => {
 
   const selectedDateStr = selectedDate.toISOString().split('T')[0];
   const dailySlots = mockSlots.filter((slot) => slot.date === selectedDateStr);
+
+  // todo: replace with actual data fetching logic
+  useEffect(() => {
+    // сейчас используем мок-данные, в реальном приложении здесь будет логика получения слотов с сервера
+    if (search.date && search.timeSlot) {
+      const parsedDate = parseDateOrToday(search.date);
+      setSelectedDate(parsedDate);
+
+      const slot = dailySlots.find(
+        (s) =>
+          s.time === search.timeSlot &&
+          s.date === parsedDate.toISOString().split('T')[0],
+      );
+      if (slot) {
+        setSelectedSlot(slot);
+        setIsDetailModalOpen(true);
+      } else {
+        setSelectedSlot(null);
+        setIsDetailModalOpen(false);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSlotClick = useCallback((slot: TimeSlot) => {
     if (slot.status === 'booked') {
