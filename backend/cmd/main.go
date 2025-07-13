@@ -87,7 +87,7 @@ func main() {
 
 	// Запуск сервера
 	server := &http.Server{
-		Addr:         fmt.Sprintf(":%v", cfg.Port),
+		Addr:         ":" + cfg.Port,
 		Handler:      r,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
