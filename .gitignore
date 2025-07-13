@@ -8,3 +8,12 @@ count.txt
 .env
 .nitro
 .tanstack
+
+# Backend Go
+backend/server
+backend/*.exe
+backend/*.dll
+backend/*.so
+backend/*.dylib
+backend/tmp/
+*.log

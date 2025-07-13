@@ -22,6 +22,18 @@ func NewFileHandler(usecase *usecase.FileUsecase) *FileHandler {
 	return &FileHandler{usecase: usecase}
 }
 
+// GetFile godoc
+// @Summary Get a file by ID
+// @Description Download file by file ID
+// @Tags files
+// @Accept  json
+// @Produce  application/octet-stream
+// @Param id path string true "File ID"
+// @Success 200 {file} binary
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /files/{id} [get]
 func (h *FileHandler) GetFile(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
@@ -47,6 +59,16 @@ func (h *FileHandler) GetFile(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// UploadFile godoc
+// @Summary Upload a file
+// @Description Upload a file to the server
+// @Tags files
+// @Accept  multipart/form-data
+// @Produce  json
+// @Param file formData file true "File to upload"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Router /files [post]
 func (h *FileHandler) UploadFile(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseMultipartForm(10 << 20); err != nil { // 10 MB limit
 		http.Error(w, "File too large or invalid form", http.StatusBadRequest)

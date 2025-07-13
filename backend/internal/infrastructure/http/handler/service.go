@@ -21,6 +21,18 @@ func NewServiceHandler(usecase *usecase.ServiceUsecase) *ServiceHandler {
 	return &ServiceHandler{usecase: usecase}
 }
 
+// GetService godoc
+// @Summary Get a service by ID
+// @Description Get service details by service ID
+// @Tags services
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Service ID"
+// @Success 200 {object} entity.Service
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /services/{id} [get]
 func (h *ServiceHandler) GetService(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := uuid.Parse(vars["id"])
@@ -41,6 +53,16 @@ func (h *ServiceHandler) GetService(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(service)
 }
 
+// CreateService godoc
+// @Summary Create a new service
+// @Description Create a new service with the input payload
+// @Tags services
+// @Accept  json
+// @Produce  json
+// @Param service body entity.Service true "Create service"
+// @Success 201 {object} entity.Service
+// @Failure 400 {object} map[string]string
+// @Router /services [post]
 func (h *ServiceHandler) CreateService(w http.ResponseWriter, r *http.Request) {
 	var service entity.Service
 	if err := json.NewDecoder(r.Body).Decode(&service); err != nil {
@@ -56,6 +78,17 @@ func (h *ServiceHandler) CreateService(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(service)
 }
 
+// UpdateService godoc
+// @Summary Update a service
+// @Description Update service details by service ID
+// @Tags services
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Service ID"
+// @Param service body entity.Service true "Update service"
+// @Success 200 {object} entity.Service
+// @Failure 400 {object} map[string]string
+// @Router /services/{id} [put]
 func (h *ServiceHandler) UpdateService(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := uuid.Parse(vars["id"])
@@ -77,6 +110,18 @@ func (h *ServiceHandler) UpdateService(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(service)
 }
 
+// DeleteService godoc
+// @Summary Delete a service
+// @Description Delete a service by service ID
+// @Tags services
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Service ID"
+// @Success 204
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /services/{id} [delete]
 func (h *ServiceHandler) DeleteService(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := uuid.Parse(vars["id"])
@@ -95,6 +140,17 @@ func (h *ServiceHandler) DeleteService(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
+// UploadServicePhoto godoc
+// @Summary Upload service photo
+// @Description Upload a photo for a service
+// @Tags services
+// @Accept  multipart/form-data
+// @Produce  json
+// @Param id path string true "Service ID"
+// @Param file formData file true "Photo file"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Router /services/{id}/photo [post]
 func (h *ServiceHandler) UploadServicePhoto(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := uuid.Parse(vars["id"])

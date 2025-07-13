@@ -20,6 +20,18 @@ func NewUserPreferencesHandler(usecase *usecase.UserPreferencesUsecase) *UserPre
 	return &UserPreferencesHandler{usecase: usecase}
 }
 
+// GetUserPreferences godoc
+// @Summary Get user preferences by ID
+// @Description Get user preferences details by user preferences ID
+// @Tags user-preferences
+// @Accept  json
+// @Produce  json
+// @Param id path string true "User Preferences ID"
+// @Success 200 {object} entity.UserPreferences
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /user_preferences/{id} [get]
 func (h *UserPreferencesHandler) GetUserPreferences(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := uuid.Parse(vars["id"])
@@ -40,6 +52,16 @@ func (h *UserPreferencesHandler) GetUserPreferences(w http.ResponseWriter, r *ht
 	json.NewEncoder(w).Encode(preferences)
 }
 
+// CreateUserPreferences godoc
+// @Summary Create new user preferences
+// @Description Create new user preferences with the input payload
+// @Tags user-preferences
+// @Accept  json
+// @Produce  json
+// @Param preferences body entity.UserPreferences true "Create user preferences"
+// @Success 201 {object} entity.UserPreferences
+// @Failure 400 {object} map[string]string
+// @Router /user_preferences [post]
 func (h *UserPreferencesHandler) CreateUserPreferences(w http.ResponseWriter, r *http.Request) {
 	var preferences entity.UserPreferences
 	if err := json.NewDecoder(r.Body).Decode(&preferences); err != nil {
@@ -55,6 +77,17 @@ func (h *UserPreferencesHandler) CreateUserPreferences(w http.ResponseWriter, r 
 	json.NewEncoder(w).Encode(preferences)
 }
 
+// UpdateUserPreferences godoc
+// @Summary Update user preferences
+// @Description Update user preferences details by user preferences ID
+// @Tags user-preferences
+// @Accept  json
+// @Produce  json
+// @Param id path string true "User Preferences ID"
+// @Param preferences body entity.UserPreferences true "Update user preferences"
+// @Success 200 {object} entity.UserPreferences
+// @Failure 400 {object} map[string]string
+// @Router /user_preferences/{id} [put]
 func (h *UserPreferencesHandler) UpdateUserPreferences(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := uuid.Parse(vars["id"])
@@ -76,6 +109,18 @@ func (h *UserPreferencesHandler) UpdateUserPreferences(w http.ResponseWriter, r 
 	json.NewEncoder(w).Encode(preferences)
 }
 
+// DeleteUserPreferences godoc
+// @Summary Delete user preferences
+// @Description Delete user preferences by user preferences ID
+// @Tags user-preferences
+// @Accept  json
+// @Produce  json
+// @Param id path string true "User Preferences ID"
+// @Success 204
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /user_preferences/{id} [delete]
 func (h *UserPreferencesHandler) DeleteUserPreferences(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := uuid.Parse(vars["id"])
