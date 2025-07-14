@@ -1,4 +1,5 @@
 import { useSearch } from '@tanstack/react-router';
+import { addHours } from 'date-fns';
 import { useState, useMemo, useCallback, useEffect } from 'react';
 
 import {
@@ -11,13 +12,14 @@ import {
 import { parseDateOrToday } from '~/shared/lib/date/parseDateOrToday';
 
 // Mock data types
-export type BookingStatus = 'booked' | 'free' | 'past';
+export type BookingStatus = 'booked' | 'free';
 
 export type TimeSlot = {
   id: string;
   time: string;
   date: string;
   status: BookingStatus;
+  isPast: boolean;
   isManual?: boolean;
   client?: {
     id: string;
@@ -68,16 +70,17 @@ const MasterSchedule = () => {
         const timeStr = `${hour.toString().padStart(2, '0')}:00`;
         const slotDateTime = new Date(date);
         slotDateTime.setHours(hour, 0, 0, 0);
-        const isPast = slotDateTime < new Date();
+        const isPast = addHours(slotDateTime, SLOT_INTERVAL) < new Date();
 
         // Mock some bookings
-        const isBooked = Math.random() > 0.7 && !isPast;
+        const isBooked = Math.random() > 0.7;
 
         slots.push({
           id: `${dateStr}-${timeStr}`,
           time: timeStr,
           date: dateStr,
-          status: isPast ? 'past' : isBooked ? 'booked' : 'free',
+          status: isBooked ? 'booked' : 'free',
+          isPast,
           isManual: isBooked ? Math.random() > 0.5 : false,
           client: isBooked
             ? {
@@ -142,7 +145,8 @@ const MasterSchedule = () => {
     if (slot.status === 'booked') {
       setSelectedSlot(slot);
       setIsDetailModalOpen(true);
-    } else if (slot.status === 'free') {
+    } else {
+      // Allow creating bookings in both past and future free slots
       setNewSlotData({
         date: slot.date,
         time: slot.time,
@@ -185,7 +189,7 @@ const MasterSchedule = () => {
       }
 
       const bookedSlots = daySlots.filter((slot) => slot.status === 'booked');
-      const totalWorkSlots = daySlots.filter((slot) => slot.status !== 'past');
+      const totalWorkSlots = daySlots.filter((slot) => !slot.isPast);
 
       if (totalWorkSlots.length === 0) {
         return 'inactive' as const;

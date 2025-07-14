@@ -7,9 +7,10 @@ import {
   Button,
   Avatar,
   Divider,
+  Alert,
 } from '@heroui/react';
 import { MessageCircle, Edit, X, Calendar, Clock, User } from 'lucide-react';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import type { TimeSlot } from '../../MasterSchedule';
 
@@ -28,6 +29,16 @@ const BookingDetailModal: React.FC<Props> = ({
   onUpdate,
   onCancel,
 }) => {
+  // Check if the booking is in the past
+  const isPastBooking = useMemo(() => {
+    if (!slot) return false;
+
+    const bookingDate = new Date(slot.date);
+    const [hours, minutes] = slot.time.split(':').map(Number);
+    bookingDate.setHours(hours, minutes, 0, 0);
+
+    return bookingDate < new Date();
+  }, [slot]);
   const handleMessageClient = useCallback(() => {
     if (slot?.client?.telegramHandle) {
       // Open Telegram chat
@@ -71,7 +82,7 @@ const BookingDetailModal: React.FC<Props> = ({
       <ModalContent>
         {(onClose) => (
           <>
-            <ModalHeader className="flex flex-col gap-1 text-center">
+            <ModalHeader className="flex flex-col gap-2 text-center">
               <h3 className="text-lg font-semibold">Booking Details</h3>
               <div className="flex items-center justify-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
                 <Calendar className="w-4 h-4" />
@@ -79,6 +90,15 @@ const BookingDetailModal: React.FC<Props> = ({
                 <Clock className="w-4 h-4 ml-2" />
                 <span>{slot.time}</span>
               </div>
+
+              {/* Past booking warning */}
+              {isPastBooking && (
+                <Alert
+                  color="primary"
+                  variant="flat"
+                  description="This booking has been completed"
+                />
+              )}
             </ModalHeader>
 
             <ModalBody className="py-4">

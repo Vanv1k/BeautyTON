@@ -6,13 +6,15 @@ import {
   ModalFooter,
   Button,
   SelectItem,
+  Alert,
 } from '@heroui/react';
-import { useState, useCallback, useEffect } from 'react';
+import { Calendar, Clock } from 'lucide-react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 
-import { Input } from '../../../shared/ui/Input';
-import { Select } from '../../../shared/ui/Select';
-import { Textarea } from '../../../shared/ui/Textarea';
-import type { TimeSlot } from '../MasterSchedule';
+import { Input } from '../../../../shared/ui/Input';
+import { Select } from '../../../../shared/ui/Select';
+import { Textarea } from '../../../../shared/ui/Textarea';
+import type { TimeSlot } from '../../MasterSchedule';
 
 type Props = {
   isOpen: boolean;
@@ -35,6 +37,17 @@ const SlotCreationModal: React.FC<Props> = ({
   });
 
   const [isLoading, setIsLoading] = useState(false);
+
+  // Check if the selected date/time is in the past
+  const isPastSlot = useMemo(() => {
+    if (!initialData) return false;
+
+    const slotDate = new Date(initialData.date);
+    const [hours, minutes] = initialData.time.split(':').map(Number);
+    slotDate.setHours(hours, minutes, 0, 0);
+
+    return slotDate < new Date();
+  }, [initialData]);
 
   // Reset form when modal opens/closes
   useEffect(() => {
@@ -125,14 +138,27 @@ const SlotCreationModal: React.FC<Props> = ({
       <ModalContent>
         {(onClose) => (
           <>
-            <ModalHeader className="flex flex-col gap-1">
+            <ModalHeader className="flex flex-col gap-2">
               <h3 className="text-lg font-semibold">Create Booking</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
-                {initialData &&
-                  `${new Date(initialData.date).toLocaleDateString()} at ${
-                    initialData.time
-                  }`}
-              </p>
+
+              {/* Date and time info */}
+              {initialData && (
+                <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
+                  <Calendar className="w-4 h-4" />
+                  <span>{new Date(initialData.date).toLocaleDateString()}</span>
+                  <Clock className="w-4 h-4 ml-2" />
+                  <span>{initialData.time}</span>
+                </div>
+              )}
+
+              {/* Past date warning */}
+              {isPastSlot && (
+                <Alert
+                  color="warning"
+                  variant="flat"
+                  description="This time slot is in the past. You're creating a historical booking."
+                />
+              )}
             </ModalHeader>
 
             <ModalBody className="py-4 space-y-4">
