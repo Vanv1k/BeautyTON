@@ -48,6 +48,7 @@ func Load() *Config {
 func getEnv(key, fallback string, env string) string {
 	// Сначала проверяем переменную с префиксом окружения (например PROD_DB_HOST)
 	prefixedKey := strings.ToUpper(env) + "_" + key
+	fmt.Println("s", prefixedKey)
 	if val, exists := os.LookupEnv(prefixedKey); exists {
 		return val
 	}
