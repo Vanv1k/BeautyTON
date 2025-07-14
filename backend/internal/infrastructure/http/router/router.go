@@ -16,6 +16,7 @@ func NewRouter(
 	serviceHandler *handler.ServiceHandler,
 	serviceCategoryHandler *handler.ServiceCategoryHandler,
 	bookingHandler *handler.BookingHandler,
+	scheduleSlotHandler *handler.ScheduleSlotHandler,
 	reviewHandler *handler.ReviewHandler,
 	paymentHandler *handler.PaymentHandler,
 	cityHandler *handler.CityHandler,

@@ -52,6 +52,7 @@ func main() {
 	serviceRepo := postgres.NewServiceRepository(pg)
 	serviceCategoryRepo := postgres.NewServiceCategoryRepository(pg)
 	bookingRepo := postgres.NewBookingRepository(pg)
+	scheduleSlotrepo := postgres.NewScheduleSlotRepository(pg)
 	reviewRepo := postgres.NewReviewRepository(pg)
 	paymentRepo := postgres.NewPaymentRepository(pg)
 	cityRepo := postgres.NewCityRepository(pg)
@@ -65,6 +66,7 @@ func main() {
 	serviceUsecase := usecase.NewServiceUsecase(serviceRepo, userRepo, serviceCategoryRepo, fileRepo)
 	serviceCategoryUsecase := usecase.NewServiceCategoryUsecase(serviceCategoryRepo)
 	bookingUsecase := usecase.NewBookingUsecase(bookingRepo, userRepo, serviceRepo)
+	scheduleSlotUsecase := usecase.NewScheduleSlotUsecase(scheduleSlotrepo, masterProfileRepo, bookingRepo)
 	reviewUsecase := usecase.NewReviewUsecase(reviewRepo, bookingRepo)
 	paymentUsecase := usecase.NewPaymentUsecase(paymentRepo, userRepo)
 	cityUsecase := usecase.NewCityUsecase(cityRepo, countryRepo)
@@ -79,6 +81,7 @@ func main() {
 	serviceHandler := handler.NewServiceHandler(serviceUsecase)
 	serviceCategoryHandler := handler.NewServiceCategoryHandler(serviceCategoryUsecase)
 	bookingHandler := handler.NewBookingHandler(bookingUsecase)
+	scheduleSlotHandler := handler.NewScheduleSlotHandler(scheduleSlotUsecase)
 	reviewHandler := handler.NewReviewHandler(reviewUsecase)
 	paymentHandler := handler.NewPaymentHandler(paymentUsecase)
 	cityHandler := handler.NewCityHandler(cityUsecase)
@@ -95,6 +98,7 @@ func main() {
 		serviceHandler,
 		serviceCategoryHandler,
 		bookingHandler,
+		scheduleSlotHandler,
 		reviewHandler,
 		paymentHandler,
 		cityHandler,

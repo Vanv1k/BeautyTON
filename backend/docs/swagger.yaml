@@ -1,4 +1,3 @@
-basePath: /
 definitions:
   entity.Booking:
     properties:
@@ -131,6 +130,41 @@ definitions:
       rating:
         type: integer
     type: object
+  entity.ScheduleSlot:
+    properties:
+      bookingID:
+        type: string
+      createdAt:
+        type: string
+      date:
+        type: string
+      endTime:
+        type: string
+      id:
+        type: string
+      masterID:
+        type: string
+      slotType:
+        $ref: '#/definitions/entity.SlotType'
+      startTime:
+        type: string
+      status:
+        $ref: '#/definitions/entity.ScheduleSlotStatus'
+      updatedAt:
+        type: string
+    type: object
+  entity.ScheduleSlotStatus:
+    enum:
+    - booked
+    - free
+    - busy
+    - reserved
+    type: string
+    x-enum-varnames:
+    - ScheduleSlotStatusBooked
+    - ScheduleSlotStatusFree
+    - ScheduleSlotStatusBusy
+    - ScheduleSlotStatusReserved
   entity.Service:
     properties:
       categoryID:
@@ -159,6 +193,14 @@ definitions:
       name:
         type: string
     type: object
+  entity.SlotType:
+    enum:
+    - manual
+    - auto
+    type: string
+    x-enum-varnames:
+    - SlotManual
+    - SlotAuto
   entity.Subscription:
     properties:
       clientID:
@@ -212,19 +254,8 @@ definitions:
     x-enum-varnames:
     - UserRoleMaster
     - UserRoleClient
-host: localhost:8080
 info:
-  contact:
-    email: support@swagger.io
-    name: API Support
-    url: http://www.swagger.io/support
-  description: This is a beauty services platform API server.
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
-  termsOfService: http://swagger.io/terms/
-  title: BeautyTON API
-  version: "1.0"
+  contact: {}
 paths:
   /bookings:
     post:
@@ -1311,6 +1342,205 @@ paths:
       summary: Update a review
       tags:
       - reviews
+  /schedule_slots:
+    get:
+      consumes:
+      - application/json
+      description: Get all schedule slots for a given master ID
+      parameters:
+      - description: Master ID
+        in: query
+        name: master_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.ScheduleSlot'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: List schedule slots for a master
+      tags:
+      - schedule_slots
+    post:
+      consumes:
+      - application/json
+      description: Create a new schedule slot with the input payload
+      parameters:
+      - description: Create schedule slot
+        in: body
+        name: slot
+        required: true
+        schema:
+          $ref: '#/definitions/entity.ScheduleSlot'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.ScheduleSlot'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new schedule slot
+      tags:
+      - schedule_slots
+  /schedule_slots/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a schedule slot by ID
+      parameters:
+      - description: Schedule Slot ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a schedule slot
+      tags:
+      - schedule_slots
+    get:
+      consumes:
+      - application/json
+      description: Get schedule slot details by ID
+      parameters:
+      - description: Schedule Slot ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ScheduleSlot'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a schedule slot by ID
+      tags:
+      - schedule_slots
+    put:
+      consumes:
+      - application/json
+      description: Update schedule slot details by ID
+      parameters:
+      - description: Schedule Slot ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update schedule slot
+        in: body
+        name: slot
+        required: true
+        schema:
+          $ref: '#/definitions/entity.ScheduleSlot'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ScheduleSlot'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a schedule slot
+      tags:
+      - schedule_slots
   /service_categories:
     post:
       consumes:
