@@ -1,13 +1,27 @@
 import { Button } from '@heroui/react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
 import { useMemo, useCallback } from 'react';
+
+import type { DayStatus } from '../lib';
+
+import { useCalendarModal } from './lib';
+import { CalendarModal } from './modals';
 
 type Props = {
   selectedDate: Date;
   onDateChange: (date: Date) => void;
+  getDayStatus?: (date: Date) => DayStatus;
 };
 
-const WeeklyHeader: React.FC<Props> = ({ selectedDate, onDateChange }) => {
+const WeeklyHeader: React.FC<Props> = ({
+  selectedDate,
+  onDateChange,
+  getDayStatus,
+}) => {
+  const calendarModal = useCalendarModal({
+    selectedDate,
+    onDateSelect: onDateChange,
+  });
   const weekDays = useMemo(() => {
     const startOfWeek = new Date(selectedDate);
     const day = startOfWeek.getDay();
@@ -59,10 +73,6 @@ const WeeklyHeader: React.FC<Props> = ({ selectedDate, onDateChange }) => {
     onDateChange(newDate);
   }, [selectedDate, onDateChange]);
 
-  const goToToday = useCallback(() => {
-    onDateChange(new Date());
-  }, [onDateChange]);
-
   const handleDayClick = useCallback(
     (date: Date) => {
       onDateChange(date);
@@ -96,10 +106,11 @@ const WeeklyHeader: React.FC<Props> = ({ selectedDate, onDateChange }) => {
           <Button
             variant="flat"
             size="sm"
-            onPress={goToToday}
+            onPress={calendarModal.openCalendar}
+            startContent={<Calendar className="w-4 h-4" />}
             className="bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
           >
-            Today
+            Calendar
           </Button>
 
           <Button
@@ -145,6 +156,16 @@ const WeeklyHeader: React.FC<Props> = ({ selectedDate, onDateChange }) => {
           })}
         </div>
       </div>
+
+      <CalendarModal
+        isOpen={calendarModal.isOpen}
+        onClose={calendarModal.closeCalendar}
+        viewDate={calendarModal.viewDate}
+        onDateSelect={calendarModal.handleDateSelect}
+        onPreviousMonth={calendarModal.goToPreviousMonth}
+        onNextMonth={calendarModal.goToNextMonth}
+        getDayStatus={getDayStatus}
+      />
     </div>
   );
 };

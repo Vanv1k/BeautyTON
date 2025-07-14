@@ -5,7 +5,9 @@ import {
   ModalContent,
   ModalHeader,
 } from '@heroui/react';
-import { memo } from 'react';
+import { useNavigate } from '@tanstack/react-router';
+import { formatDate } from 'date-fns';
+import { memo, useCallback } from 'react';
 
 type TimeSlot = {
   time: string;
@@ -25,6 +27,22 @@ const TimeSlotModal: React.FC<Props> = ({
   onOpenChange,
   selectedTimeSlot,
 }) => {
+  const navigate = useNavigate();
+
+  const handleViewDetails = useCallback(() => {
+    if (selectedTimeSlot) {
+      const today = new Date();
+
+      navigate({
+        to: '/master/schedule',
+        search: {
+          timeSlot: selectedTimeSlot.time,
+          date: formatDate(today, 'yyyy-MM-dd'),
+        },
+      });
+    }
+  }, [navigate, selectedTimeSlot]);
+
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="bottom">
       <ModalContent>
@@ -49,7 +67,12 @@ const TimeSlotModal: React.FC<Props> = ({
                     </p>
                   </div>
                   <div className="flex space-x-2">
-                    <Button variant="flat" size="sm" className="flex-1">
+                    <Button
+                      variant="flat"
+                      size="sm"
+                      className="flex-1"
+                      onPress={handleViewDetails}
+                    >
                       View Details
                     </Button>
                     <Button variant="flat" size="sm" className="flex-1">
