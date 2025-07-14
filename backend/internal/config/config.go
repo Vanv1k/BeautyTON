@@ -19,6 +19,8 @@ func Load() *Config {
 	if env == "" {
 		env = "dev"
 	}
+	fmt.Println("asdv ", env)
+	fmt.Println(getEnv("DB_NAME", "beautyton", env))
 
 	return &Config{
 		Port: getEnv("PORT", "8080", env),
