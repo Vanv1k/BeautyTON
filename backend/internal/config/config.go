@@ -15,9 +15,9 @@ type Config struct {
 }
 
 func Load() *Config {
-	env := os.Getenv("APP_ENV") // "dev" или "prod"
+	env := os.Getenv("APP_ENV")
 	if env == "" {
-		env = "dev" // значение по умолчанию
+		env = "dev"
 	}
 
 	return &Config{
