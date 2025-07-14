@@ -8,6 +8,7 @@ import {
   DailySchedule,
   SlotCreationModal,
   WeeklyHeader,
+  SlotInfoModal,
 } from './ui';
 
 import { parseDateOrToday } from '~/shared/lib/date';
@@ -22,6 +23,7 @@ const MasterSchedule = () => {
   );
   const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [isSlotInfoModalOpen, setIsSlotInfoModalOpen] = useState(false);
   const [newSlotData, setNewSlotData] = useState<{
     date: string;
     time: string;
@@ -54,9 +56,9 @@ const MasterSchedule = () => {
   }, []);
 
   const handleSlotClick = useCallback((slot: TimeSlot) => {
-    if (slot.status === 'booked') {
+    if (slot.status === 'booked' || slot.status === 'pending') {
       setSelectedSlot(slot);
-      setIsDetailModalOpen(true);
+      setIsSlotInfoModalOpen(true);
     } else {
       // Allow creating bookings in both past and future free slots
       setNewSlotData({
@@ -90,6 +92,32 @@ const MasterSchedule = () => {
     setNewSlotData(null);
   }, []);
 
+  const handlePendingConfirm = useCallback(
+    (slotId: string, comment?: string) => {
+      // In real app, this would confirm the pending booking in backend
+      // The comment would be sent to the client via bot notification
+      // TODO: API call to confirm booking with slotId and comment
+      void slotId;
+      void comment;
+      setIsSlotInfoModalOpen(false);
+      setSelectedSlot(null);
+    },
+    [],
+  );
+
+  const handlePendingDecline = useCallback(
+    (slotId: string, comment?: string) => {
+      // In real app, this would decline the pending booking in backend
+      // The comment would be sent to the client via bot notification
+      // TODO: API call to decline booking with slotId and comment
+      void slotId;
+      void comment;
+      setIsSlotInfoModalOpen(false);
+      setSelectedSlot(null);
+    },
+    [],
+  );
+
   return (
     <div className="max-w-md mx-auto min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">
       <WeeklyHeader
@@ -113,6 +141,15 @@ const MasterSchedule = () => {
         onClose={() => setIsDetailModalOpen(false)}
         onUpdate={handleBookingUpdate}
         onCancel={handleBookingCancel}
+      />
+
+      {/* Slot Info Modal (for pending and booked slots) */}
+      <SlotInfoModal
+        isOpen={isSlotInfoModalOpen}
+        slot={selectedSlot}
+        onClose={() => setIsSlotInfoModalOpen(false)}
+        onConfirm={handlePendingConfirm}
+        onDecline={handlePendingDecline}
       />
 
       {/* Slot Creation Modal */}

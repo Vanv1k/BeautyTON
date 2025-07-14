@@ -1,6 +1,6 @@
 import { addHours } from 'date-fns';
 
-import { SLOT_INTERVAL } from './constants';
+import { SLOT_INTERVAL, WORK_END_HOUR, WORK_START_HOUR } from './constants';
 import type { DayStatus, TimeSlot } from './types';
 
 import { createDateTimeFromString } from '~/shared/lib/date';
@@ -21,7 +21,9 @@ export const getDayStatusFromSlots = (slots: TimeSlot[]): DayStatus => {
     return 'inactive';
   }
 
-  const bookedSlots = slots.filter((slot) => slot.status === 'booked');
+  const bookedSlots = slots.filter(
+    (slot) => slot.status === 'booked' || slot.status === 'pending',
+  );
   const totalWorkSlots = slots.filter((slot) => !slot.isPast);
 
   if (totalWorkSlots.length === 0) {
@@ -51,4 +53,34 @@ export const formatTimeSlot = (hour: number): string => {
  */
 export const generateSlotId = (date: string, time: string): string => {
   return `${date}-${time}`;
+};
+
+/**
+ * Проверяет, находится ли текущее время в пределах рабочих часов
+ */
+export const isCurrentTimeInWorkHours = (currentTime: number): boolean => {
+  const currentHour = Math.floor(currentTime / 60);
+  return currentHour >= WORK_START_HOUR && currentHour < WORK_END_HOUR;
+};
+
+/**
+ * Проверяет, должна ли отображаться линия текущего времени
+ */
+export const shouldShowCurrentTimeLine = (
+  slots: TimeSlot[],
+  currentTime: number,
+): boolean => {
+  if (slots.length === 0) return false;
+
+  const currentHour = Math.floor(currentTime / 60);
+  const hasActiveSlots = slots.some((slot) => {
+    const slotHour = parseInt(slot.time.split(':')[0]);
+    return slotHour >= WORK_START_HOUR && slotHour < WORK_END_HOUR;
+  });
+
+  return (
+    hasActiveSlots &&
+    currentHour >= WORK_START_HOUR &&
+    currentHour < WORK_END_HOUR
+  );
 };

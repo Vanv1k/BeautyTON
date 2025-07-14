@@ -5,7 +5,7 @@ import { useMemo, useCallback } from 'react';
 import type { DayStatus } from '../lib';
 
 import { useCalendarModal } from './lib';
-import { CalendarModal } from './modal';
+import { CalendarModal } from './modals';
 
 type Props = {
   selectedDate: Date;

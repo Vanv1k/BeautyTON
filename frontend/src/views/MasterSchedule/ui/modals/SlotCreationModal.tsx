@@ -135,7 +135,9 @@ const SlotCreationModal: React.FC<Props> = ({
                   <span>{initialData.time}</span>
                 </div>
               )}
+            </ModalHeader>
 
+            <ModalBody className="py-4 space-y-4">
               {/* Past date warning */}
               {isPastSlot && (
                 <Alert
@@ -144,9 +146,7 @@ const SlotCreationModal: React.FC<Props> = ({
                   description="This time slot is in the past. You're creating a historical booking."
                 />
               )}
-            </ModalHeader>
 
-            <ModalBody className="py-4 space-y-4">
               {/* Service Selection */}
               <Select
                 label="Service"

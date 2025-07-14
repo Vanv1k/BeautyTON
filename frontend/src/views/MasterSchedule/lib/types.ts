@@ -1,4 +1,4 @@
-export type BookingStatus = 'booked' | 'free';
+export type BookingStatus = 'booked' | 'free' | 'pending';
 
 export type TimeSlot = {
   id: string;
@@ -7,6 +7,7 @@ export type TimeSlot = {
   status: BookingStatus;
   isPast: boolean;
   isManual?: boolean;
+  clientAttended?: boolean; // Для прошедших сеансов - пришел ли клиент
   client?: {
     id: string;
     name: string;

@@ -25,17 +25,40 @@ export const generateMockSlots = (): TimeSlot[] => {
       const timeStr = formatTimeSlot(hour);
       const isPast = isSlotPast(dateStr, timeStr);
 
-      // Mock some bookings
-      const isBooked = Math.random() > 0.7;
+      // Mock some bookings with different statuses
+      const randomValue = Math.random();
+      let status: 'booked' | 'free' | 'pending';
+      let isManual = false;
+      let clientAttended: boolean | undefined;
+
+      if (randomValue > 0.8) {
+        // 20% chance of booking
+        if (Math.random() > 0.7) {
+          // 30% of future bookings are pending approval
+          status = 'pending';
+        } else {
+          status = 'booked';
+          isManual = Math.random() > 0.5;
+          // For past booked slots, randomly set if client attended
+          if (isPast) {
+            clientAttended = Math.random() > 0.2; // 80% attendance rate
+          }
+        }
+      } else {
+        status = 'free';
+      }
+
+      const hasClient = status === 'booked' || status === 'pending';
 
       slots.push({
         id: generateSlotId(dateStr, timeStr),
         time: timeStr,
         date: dateStr,
-        status: isBooked ? 'booked' : 'free',
+        status,
         isPast,
-        isManual: isBooked ? Math.random() > 0.5 : false,
-        client: isBooked
+        isManual,
+        clientAttended,
+        client: hasClient
           ? {
               id: `client-${Math.random()}`,
               name: MOCK_CLIENT_NAMES[
@@ -49,7 +72,7 @@ export const generateMockSlots = (): TimeSlot[] => {
                 ],
             }
           : undefined,
-        service: isBooked
+        service: hasClient
           ? {
               name: MOCK_SERVICES[
                 Math.floor(Math.random() * MOCK_SERVICES.length)
@@ -58,8 +81,10 @@ export const generateMockSlots = (): TimeSlot[] => {
             }
           : undefined,
         comments:
-          isBooked && Math.random() > 0.7
-            ? 'Special request: please be gentle'
+          hasClient && Math.random() > 0.7
+            ? status === 'pending'
+              ? 'Please confirm if you can take this appointment'
+              : 'Special request: please be gentle'
             : undefined,
       });
     }
