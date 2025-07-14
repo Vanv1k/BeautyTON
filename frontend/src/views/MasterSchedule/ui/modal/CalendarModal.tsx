@@ -9,7 +9,8 @@ import {
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { memo, useCallback } from 'react';
 
-import { useCalendarData, type CalendarDay, type DayStatus } from '../lib';
+import type { DayStatus } from '../../lib';
+import { useCalendarData, type CalendarDay } from '../lib';
 
 type Props = {
   isOpen: boolean;

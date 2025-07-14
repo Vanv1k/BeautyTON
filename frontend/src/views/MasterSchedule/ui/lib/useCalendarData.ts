@@ -1,19 +1,19 @@
 import { useMemo, useCallback } from 'react';
 
-export type DayStatus = 'free' | 'light' | 'heavy' | 'inactive';
+import type { DayStatus } from '../../lib';
 
-export interface CalendarDay {
+export type CalendarDay = {
   date: Date;
   status: DayStatus;
   isCurrentMonth: boolean;
   isToday: boolean;
   isPast: boolean;
-}
+};
 
-interface UseCalendarDataProps {
+type UseCalendarDataProps = {
   viewDate: Date;
   getDayStatus?: (date: Date) => DayStatus;
-}
+};
 
 export const useCalendarData = ({
   viewDate,

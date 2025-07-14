@@ -1,7 +1,8 @@
 import { useSearch } from '@tanstack/react-router';
-import { addHours } from 'date-fns';
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
+import type { TimeSlot, SlotCreationData } from './lib';
+import { useScheduleSlots, useDayStatus } from './model';
 import {
   BookingDetailModal,
   DailySchedule,
@@ -9,40 +10,12 @@ import {
   WeeklyHeader,
 } from './ui';
 
-import { parseDateOrToday } from '~/shared/lib/date/parseDateOrToday';
-
-// Mock data types
-export type BookingStatus = 'booked' | 'free';
-
-export type TimeSlot = {
-  id: string;
-  time: string;
-  date: string;
-  status: BookingStatus;
-  isPast: boolean;
-  isManual?: boolean;
-  client?: {
-    id: string;
-    name: string;
-    avatar?: string;
-    telegramHandle?: string;
-  };
-  service?: {
-    name: string;
-    duration: number; // in hours
-  };
-  comments?: string;
-};
-
-// Constants
-export const SLOT_INTERVAL = 1; // 1 hour
-
-export const WORK_START_HOUR = 8;
-
-export const WORK_END_HOUR = 22;
+import { parseDateOrToday } from '~/shared/lib/date';
 
 const MasterSchedule = () => {
   const search = useSearch({ from: '/master/schedule' });
+  const { getSlotsByDate } = useScheduleSlots();
+  const { getDayStatus } = useDayStatus();
 
   const [selectedDate, setSelectedDate] = useState(
     parseDateOrToday(search.date),
@@ -55,68 +28,7 @@ const MasterSchedule = () => {
   } | null>(null);
   const [isCreationModalOpen, setIsCreationModalOpen] = useState(false);
 
-  // Mock data - in real app this would come from backend
-  const mockSlots: TimeSlot[] = useMemo(() => {
-    const today = new Date();
-    const slots: TimeSlot[] = [];
-
-    // Generate slots for a week
-    for (let dayOffset = -3; dayOffset <= 3; dayOffset++) {
-      const date = new Date(today);
-      date.setDate(today.getDate() + dayOffset);
-      const dateStr = date.toISOString().split('T')[0];
-
-      for (let hour = WORK_START_HOUR; hour < WORK_END_HOUR; hour++) {
-        const timeStr = `${hour.toString().padStart(2, '0')}:00`;
-        const slotDateTime = new Date(date);
-        slotDateTime.setHours(hour, 0, 0, 0);
-        const isPast = addHours(slotDateTime, SLOT_INTERVAL) < new Date();
-
-        // Mock some bookings
-        const isBooked = Math.random() > 0.7;
-
-        slots.push({
-          id: `${dateStr}-${timeStr}`,
-          time: timeStr,
-          date: dateStr,
-          status: isBooked ? 'booked' : 'free',
-          isPast,
-          isManual: isBooked ? Math.random() > 0.5 : false,
-          client: isBooked
-            ? {
-                id: `client-${Math.random()}`,
-                name: ['Anna K.', 'Maria S.', 'Elena P.', 'Sofia M.'][
-                  Math.floor(Math.random() * 4)
-                ],
-                avatar: `https://i.pravatar.cc/40?u=${Math.random()}`,
-                telegramHandle:
-                  '@' +
-                  ['anna_k', 'maria_s', 'elena_p', 'sofia_m'][
-                    Math.floor(Math.random() * 4)
-                  ],
-              }
-            : undefined,
-          service: isBooked
-            ? {
-                name: ['Manicure', 'Hair Cut', 'Hair Color', 'Facial'][
-                  Math.floor(Math.random() * 4)
-                ],
-                duration: [1, 2][Math.floor(Math.random() * 2)],
-              }
-            : undefined,
-          comments:
-            isBooked && Math.random() > 0.7
-              ? 'Special request: please be gentle'
-              : undefined,
-        });
-      }
-    }
-
-    return slots;
-  }, []);
-
-  const selectedDateStr = selectedDate.toISOString().split('T')[0];
-  const dailySlots = mockSlots.filter((slot) => slot.date === selectedDateStr);
+  const dailySlots = getSlotsByDate(selectedDate);
 
   // todo: replace with actual data fetching logic
   useEffect(() => {
@@ -172,41 +84,11 @@ const MasterSchedule = () => {
   }, []);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleSlotCreate = useCallback((_slotData: Partial<TimeSlot>) => {
+  const handleSlotCreate = useCallback((_slotData: SlotCreationData) => {
     // In real app, this would create a new booking in backend
     setIsCreationModalOpen(false);
     setNewSlotData(null);
   }, []);
-
-  // Function to determine day status for calendar
-  const getDayStatus = useCallback(
-    (date: Date) => {
-      const dateStr = date.toISOString().split('T')[0];
-      const daySlots = mockSlots.filter((slot) => slot.date === dateStr);
-
-      if (daySlots.length === 0) {
-        return 'inactive' as const;
-      }
-
-      const bookedSlots = daySlots.filter((slot) => slot.status === 'booked');
-      const totalWorkSlots = daySlots.filter((slot) => !slot.isPast);
-
-      if (totalWorkSlots.length === 0) {
-        return 'inactive' as const;
-      }
-
-      const occupancyRate = bookedSlots.length / totalWorkSlots.length;
-
-      if (occupancyRate === 0) {
-        return 'free' as const;
-      } else if (occupancyRate <= 0.5) {
-        return 'light' as const;
-      } else {
-        return 'heavy' as const;
-      }
-    },
-    [mockSlots],
-  );
 
   return (
     <div className="max-w-md mx-auto min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">

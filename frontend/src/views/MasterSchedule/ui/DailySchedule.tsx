@@ -2,7 +2,7 @@ import { Avatar, Card, CardBody } from '@heroui/react';
 import { Clock, User } from 'lucide-react';
 import { useMemo, useCallback } from 'react';
 
-import type { TimeSlot } from '../MasterSchedule';
+import type { TimeSlot } from '../lib';
 
 type Props = {
   slots: TimeSlot[];

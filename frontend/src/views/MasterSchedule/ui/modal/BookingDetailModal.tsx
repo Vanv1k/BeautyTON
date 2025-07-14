@@ -12,7 +12,7 @@ import {
 import { MessageCircle, Edit, X, Calendar, Clock, User } from 'lucide-react';
 import { useCallback, useMemo } from 'react';
 
-import type { TimeSlot } from '../../MasterSchedule';
+import type { TimeSlot } from '../../lib';
 
 type Props = {
   isOpen: boolean;

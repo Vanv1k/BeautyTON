@@ -1,9 +1,9 @@
 import { useState, useCallback } from 'react';
 
-interface UseCalendarModalProps {
+type UseCalendarModalProps = {
   selectedDate: Date;
   onDateSelect: (date: Date) => void;
-}
+};
 
 export const useCalendarModal = ({
   selectedDate,

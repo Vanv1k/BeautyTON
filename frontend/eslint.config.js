@@ -20,7 +20,7 @@ export default tseslint.config(
   ...tseslint.configs.strict,
   ...tseslint.configs.stylistic,
   {
-    files: ['src/**/*.tsx'],
+    files: ['src/**/*.tsx', 'src/**/*.ts'],
     rules: {
       '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
       '@typescript-eslint/consistent-type-exports': 'error',

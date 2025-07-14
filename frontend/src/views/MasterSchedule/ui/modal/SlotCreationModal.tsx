@@ -14,13 +14,13 @@ import { useState, useCallback, useEffect, useMemo } from 'react';
 import { Input } from '../../../../shared/ui/Input';
 import { Select } from '../../../../shared/ui/Select';
 import { Textarea } from '../../../../shared/ui/Textarea';
-import type { TimeSlot } from '../../MasterSchedule';
+import type { SlotCreationData } from '../../lib';
 
 type Props = {
   isOpen: boolean;
   initialData: { date: string; time: string } | null;
   onClose: () => void;
-  onCreate: (slotData: Partial<TimeSlot>) => void;
+  onCreate: (slotData: SlotCreationData) => void;
 };
 
 const SlotCreationModal: React.FC<Props> = ({
@@ -77,30 +77,15 @@ const SlotCreationModal: React.FC<Props> = ({
     setIsLoading(true);
 
     try {
-      const newSlot: Partial<TimeSlot> = {
+      const slotCreationData: SlotCreationData = {
         date: initialData.date,
         time: initialData.time,
-        status: 'booked' as const,
-        isManual: true,
-        service: {
-          name: formData.service,
-          duration: parseInt(formData.duration),
-        },
-        comments: formData.comments || undefined,
       };
-
-      // Add client info if provided
-      if (formData.clientName.trim()) {
-        newSlot.client = {
-          id: `manual-${Date.now()}`,
-          name: formData.clientName.trim(),
-        };
-      }
 
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 500));
 
-      onCreate(newSlot);
+      onCreate(slotCreationData);
     } finally {
       setIsLoading(false);
     }

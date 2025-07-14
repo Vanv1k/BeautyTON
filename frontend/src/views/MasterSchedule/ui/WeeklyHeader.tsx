@@ -2,13 +2,15 @@ import { Button } from '@heroui/react';
 import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
 import { useMemo, useCallback } from 'react';
 
+import type { DayStatus } from '../lib';
+
 import { useCalendarModal } from './lib';
 import { CalendarModal } from './modal';
 
 type Props = {
   selectedDate: Date;
   onDateChange: (date: Date) => void;
-  getDayStatus?: (date: Date) => 'free' | 'light' | 'heavy' | 'inactive';
+  getDayStatus?: (date: Date) => DayStatus;
 };
 
 const WeeklyHeader: React.FC<Props> = ({
