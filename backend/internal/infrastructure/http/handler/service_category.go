@@ -19,6 +19,18 @@ func NewServiceCategoryHandler(usecase *usecase.ServiceCategoryUsecase) *Service
 	return &ServiceCategoryHandler{usecase: usecase}
 }
 
+// GetServiceCategory godoc
+// @Summary Get a service category by ID
+// @Description Get service category details by service category ID
+// @Tags service-categories
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Service Category ID"
+// @Success 200 {object} entity.ServiceCategory
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /service_categories/{id} [get]
 func (h *ServiceCategoryHandler) GetServiceCategory(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := uuid.Parse(vars["id"])
@@ -39,6 +51,16 @@ func (h *ServiceCategoryHandler) GetServiceCategory(w http.ResponseWriter, r *ht
 	json.NewEncoder(w).Encode(category)
 }
 
+// CreateServiceCategory godoc
+// @Summary Create a new service category
+// @Description Create a new service category with the input payload
+// @Tags service-categories
+// @Accept  json
+// @Produce  json
+// @Param category body entity.ServiceCategory true "Create service category"
+// @Success 201 {object} entity.ServiceCategory
+// @Failure 400 {object} map[string]string
+// @Router /service_categories [post]
 func (h *ServiceCategoryHandler) CreateServiceCategory(w http.ResponseWriter, r *http.Request) {
 	var category entity.ServiceCategory
 	if err := json.NewDecoder(r.Body).Decode(&category); err != nil {
@@ -54,6 +76,17 @@ func (h *ServiceCategoryHandler) CreateServiceCategory(w http.ResponseWriter, r 
 	json.NewEncoder(w).Encode(category)
 }
 
+// UpdateServiceCategory godoc
+// @Summary Update a service category
+// @Description Update service category details by service category ID
+// @Tags service-categories
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Service Category ID"
+// @Param category body entity.ServiceCategory true "Update service category"
+// @Success 200 {object} entity.ServiceCategory
+// @Failure 400 {object} map[string]string
+// @Router /service_categories/{id} [put]
 func (h *ServiceCategoryHandler) UpdateServiceCategory(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := uuid.Parse(vars["id"])
@@ -75,6 +108,18 @@ func (h *ServiceCategoryHandler) UpdateServiceCategory(w http.ResponseWriter, r 
 	json.NewEncoder(w).Encode(category)
 }
 
+// DeleteServiceCategory godoc
+// @Summary Delete a service category
+// @Description Delete a service category by service category ID
+// @Tags service-categories
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Service Category ID"
+// @Success 204
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /service_categories/{id} [delete]
 func (h *ServiceCategoryHandler) DeleteServiceCategory(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := uuid.Parse(vars["id"])

@@ -21,6 +21,18 @@ func NewMasterProfileHandler(usecase *usecase.MasterProfileUsecase) *MasterProfi
 	return &MasterProfileHandler{usecase: usecase}
 }
 
+// GetMasterProfile godoc
+// @Summary Get a master profile by ID
+// @Description Get master profile details by master profile ID
+// @Tags master-profiles
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Master Profile ID"
+// @Success 200 {object} entity.MasterProfile
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /master_profiles/{id} [get]
 func (h *MasterProfileHandler) GetMasterProfile(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := uuid.Parse(vars["id"])
@@ -41,6 +53,16 @@ func (h *MasterProfileHandler) GetMasterProfile(w http.ResponseWriter, r *http.R
 	json.NewEncoder(w).Encode(profile)
 }
 
+// CreateMasterProfile godoc
+// @Summary Create a new master profile
+// @Description Create a new master profile with the input payload
+// @Tags master-profiles
+// @Accept  json
+// @Produce  json
+// @Param profile body entity.MasterProfile true "Create master profile"
+// @Success 201 {object} entity.MasterProfile
+// @Failure 400 {object} map[string]string
+// @Router /master_profiles [post]
 func (h *MasterProfileHandler) CreateMasterProfile(w http.ResponseWriter, r *http.Request) {
 	var profile entity.MasterProfile
 	if err := json.NewDecoder(r.Body).Decode(&profile); err != nil {
@@ -56,6 +78,17 @@ func (h *MasterProfileHandler) CreateMasterProfile(w http.ResponseWriter, r *htt
 	json.NewEncoder(w).Encode(profile)
 }
 
+// UpdateMasterProfile godoc
+// @Summary Update a master profile
+// @Description Update master profile details by master profile ID
+// @Tags master-profiles
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Master Profile ID"
+// @Param profile body entity.MasterProfile true "Update master profile"
+// @Success 200 {object} entity.MasterProfile
+// @Failure 400 {object} map[string]string
+// @Router /master_profiles/{id} [put]
 func (h *MasterProfileHandler) UpdateMasterProfile(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := uuid.Parse(vars["id"])
@@ -77,6 +110,17 @@ func (h *MasterProfileHandler) UpdateMasterProfile(w http.ResponseWriter, r *htt
 	json.NewEncoder(w).Encode(profile)
 }
 
+// UpdateMasterProfileRating godoc
+// @Summary Update master profile rating
+// @Description Update master profile rating by master profile ID
+// @Tags master-profiles
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Master Profile ID"
+// @Param rating body object{rating=number} true "Rating value"
+// @Success 200 {object} entity.MasterProfile
+// @Failure 400 {object} map[string]string
+// @Router /master_profiles/{id}/rating [put]
 func (h *MasterProfileHandler) UpdateMasterProfileRating(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := uuid.Parse(vars["id"])
@@ -100,6 +144,18 @@ func (h *MasterProfileHandler) UpdateMasterProfileRating(w http.ResponseWriter, 
 	json.NewEncoder(w).Encode(profile)
 }
 
+// DeleteMasterProfile godoc
+// @Summary Delete a master profile
+// @Description Delete a master profile by master profile ID
+// @Tags master-profiles
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Master Profile ID"
+// @Success 204
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /master_profiles/{id} [delete]
 func (h *MasterProfileHandler) DeleteMasterProfile(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := uuid.Parse(vars["id"])
