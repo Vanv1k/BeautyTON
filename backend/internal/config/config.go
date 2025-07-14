@@ -16,10 +16,10 @@ type Config struct {
 
 func Load() *Config {
 	env := os.Getenv("APP_ENV")
+	fmt.Println("asdv ", env)
 	if env == "" {
 		env = "dev"
 	}
-	fmt.Println("asdv ", env)
 	fmt.Println(getEnv("DB_NAME", "beautyton", env))
 
 	return &Config{
