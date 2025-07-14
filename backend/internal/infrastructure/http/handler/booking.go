@@ -19,6 +19,18 @@ func NewBookingHandler(usecase *usecase.BookingUsecase) *BookingHandler {
 	return &BookingHandler{usecase: usecase}
 }
 
+// GetBooking godoc
+// @Summary Get a booking by ID
+// @Description Get booking details by booking ID
+// @Tags bookings
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Booking ID"
+// @Success 200 {object} entity.Booking
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /bookings/{id} [get]
 func (h *BookingHandler) GetBooking(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := uuid.Parse(vars["id"])
@@ -39,6 +51,16 @@ func (h *BookingHandler) GetBooking(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(booking)
 }
 
+// CreateBooking godoc
+// @Summary Create a new booking
+// @Description Create a new booking with the input payload
+// @Tags bookings
+// @Accept  json
+// @Produce  json
+// @Param booking body entity.Booking true "Create booking"
+// @Success 201 {object} entity.Booking
+// @Failure 400 {object} map[string]string
+// @Router /bookings [post]
 func (h *BookingHandler) CreateBooking(w http.ResponseWriter, r *http.Request) {
 	var booking entity.Booking
 	if err := json.NewDecoder(r.Body).Decode(&booking); err != nil {
@@ -54,6 +76,17 @@ func (h *BookingHandler) CreateBooking(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(booking)
 }
 
+// UpdateBooking godoc
+// @Summary Update a booking
+// @Description Update booking details by booking ID
+// @Tags bookings
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Booking ID"
+// @Param booking body entity.Booking true "Update booking"
+// @Success 200 {object} entity.Booking
+// @Failure 400 {object} map[string]string
+// @Router /bookings/{id} [put]
 func (h *BookingHandler) UpdateBooking(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := uuid.Parse(vars["id"])
@@ -75,6 +108,17 @@ func (h *BookingHandler) UpdateBooking(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(booking)
 }
 
+// UpdateBookingStatus godoc
+// @Summary Update booking status
+// @Description Update booking status by booking ID
+// @Tags bookings
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Booking ID"
+// @Param status body object{status=entity.BookingStatus} true "Booking status"
+// @Success 200 {object} entity.Booking
+// @Failure 400 {object} map[string]string
+// @Router /bookings/{id}/status [put]
 func (h *BookingHandler) UpdateBookingStatus(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := uuid.Parse(vars["id"])
@@ -98,6 +142,18 @@ func (h *BookingHandler) UpdateBookingStatus(w http.ResponseWriter, r *http.Requ
 	json.NewEncoder(w).Encode(booking)
 }
 
+// DeleteBooking godoc
+// @Summary Delete a booking
+// @Description Delete a booking by booking ID
+// @Tags bookings
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Booking ID"
+// @Success 204
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /bookings/{id} [delete]
 func (h *BookingHandler) DeleteBooking(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := uuid.Parse(vars["id"])

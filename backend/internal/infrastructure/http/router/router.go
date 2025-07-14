@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/gorilla/mux"
+	httpSwagger "github.com/swaggo/http-swagger"
 
 	"github.com/Vanv1k/BeautyTON/internal/infrastructure/http/handler"
 )
@@ -15,6 +16,7 @@ func NewRouter(
 	serviceHandler *handler.ServiceHandler,
 	serviceCategoryHandler *handler.ServiceCategoryHandler,
 	bookingHandler *handler.BookingHandler,
+	scheduleSlotHandler *handler.ScheduleSlotHandler,
 	reviewHandler *handler.ReviewHandler,
 	paymentHandler *handler.PaymentHandler,
 	cityHandler *handler.CityHandler,
@@ -103,6 +105,9 @@ func NewRouter(
 	// File routes
 	router.HandleFunc("/files/{id}", fileHandler.GetFile).Methods("GET")
 	router.HandleFunc("/files", fileHandler.UploadFile).Methods("POST")
+
+	// Swagger routes
+	router.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
 
 	return router
 }

@@ -19,6 +19,18 @@ func NewCityHandler(usecase *usecase.CityUsecase) *CityHandler {
 	return &CityHandler{usecase: usecase}
 }
 
+// GetCity godoc
+// @Summary Get a city by ID
+// @Description Get city details by city ID
+// @Tags cities
+// @Accept  json
+// @Produce  json
+// @Param id path string true "City ID"
+// @Success 200 {object} entity.City
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /cities/{id} [get]
 func (h *CityHandler) GetCity(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := uuid.Parse(vars["id"])
@@ -39,6 +51,16 @@ func (h *CityHandler) GetCity(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(city)
 }
 
+// CreateCity godoc
+// @Summary Create a new city
+// @Description Create a new city with the input payload
+// @Tags cities
+// @Accept  json
+// @Produce  json
+// @Param city body entity.City true "Create city"
+// @Success 201 {object} entity.City
+// @Failure 400 {object} map[string]string
+// @Router /cities [post]
 func (h *CityHandler) CreateCity(w http.ResponseWriter, r *http.Request) {
 	var city entity.City
 	if err := json.NewDecoder(r.Body).Decode(&city); err != nil {
@@ -54,6 +76,17 @@ func (h *CityHandler) CreateCity(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(city)
 }
 
+// UpdateCity godoc
+// @Summary Update a city
+// @Description Update city details by city ID
+// @Tags cities
+// @Accept  json
+// @Produce  json
+// @Param id path string true "City ID"
+// @Param city body entity.City true "Update city"
+// @Success 200 {object} entity.City
+// @Failure 400 {object} map[string]string
+// @Router /cities/{id} [put]
 func (h *CityHandler) UpdateCity(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := uuid.Parse(vars["id"])
@@ -75,6 +108,18 @@ func (h *CityHandler) UpdateCity(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(city)
 }
 
+// DeleteCity godoc
+// @Summary Delete a city
+// @Description Delete a city by city ID
+// @Tags cities
+// @Accept  json
+// @Produce  json
+// @Param id path string true "City ID"
+// @Success 204
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /cities/{id} [delete]
 func (h *CityHandler) DeleteCity(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := uuid.Parse(vars["id"])

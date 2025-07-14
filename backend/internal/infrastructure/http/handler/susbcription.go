@@ -21,6 +21,18 @@ func NewSubscriptionHandler(usecase *usecase.SubscriptionUsecase) *SubscriptionH
 	return &SubscriptionHandler{usecase: usecase}
 }
 
+// GetSubscription godoc
+// @Summary Get a subscription by ID
+// @Description Get subscription details by subscription ID
+// @Tags subscriptions
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Subscription ID"
+// @Success 200 {object} entity.Subscription
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /subscriptions/{id} [get]
 func (h *SubscriptionHandler) GetSubscription(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := uuid.Parse(vars["id"])
@@ -41,6 +53,16 @@ func (h *SubscriptionHandler) GetSubscription(w http.ResponseWriter, r *http.Req
 	json.NewEncoder(w).Encode(subscription)
 }
 
+// CreateSubscription godoc
+// @Summary Create a new subscription
+// @Description Create a new subscription with the input payload
+// @Tags subscriptions
+// @Accept  json
+// @Produce  json
+// @Param subscription body entity.Subscription true "Create subscription"
+// @Success 201 {object} entity.Subscription
+// @Failure 400 {object} map[string]string
+// @Router /subscriptions [post]
 func (h *SubscriptionHandler) CreateSubscription(w http.ResponseWriter, r *http.Request) {
 	var subscription entity.Subscription
 	if err := json.NewDecoder(r.Body).Decode(&subscription); err != nil {
@@ -56,6 +78,17 @@ func (h *SubscriptionHandler) CreateSubscription(w http.ResponseWriter, r *http.
 	json.NewEncoder(w).Encode(subscription)
 }
 
+// UpdateSubscription godoc
+// @Summary Update a subscription
+// @Description Update subscription details by subscription ID
+// @Tags subscriptions
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Subscription ID"
+// @Param subscription body entity.Subscription true "Update subscription"
+// @Success 200 {object} entity.Subscription
+// @Failure 400 {object} map[string]string
+// @Router /subscriptions/{id} [put]
 func (h *SubscriptionHandler) UpdateSubscription(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := uuid.Parse(vars["id"])
@@ -77,6 +110,18 @@ func (h *SubscriptionHandler) UpdateSubscription(w http.ResponseWriter, r *http.
 	json.NewEncoder(w).Encode(subscription)
 }
 
+// DeleteSubscription godoc
+// @Summary Delete a subscription
+// @Description Delete a subscription by subscription ID
+// @Tags subscriptions
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Subscription ID"
+// @Success 204
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /subscriptions/{id} [delete]
 func (h *SubscriptionHandler) DeleteSubscription(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := uuid.Parse(vars["id"])

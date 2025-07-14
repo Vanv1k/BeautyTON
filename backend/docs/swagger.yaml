@@ -1,0 +1,2287 @@
+definitions:
+  entity.Booking:
+    properties:
+      bookingTime:
+        type: string
+      clientID:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      masterID:
+        type: string
+      serviceID:
+        type: string
+      status:
+        $ref: '#/definitions/entity.BookingStatus'
+      updatedAt:
+        type: string
+    type: object
+  entity.BookingStatus:
+    enum:
+    - pending
+    - confirmed
+    - completed
+    - canceled
+    type: string
+    x-enum-varnames:
+    - BookingStatusPending
+    - BookingStatusConfirmed
+    - BookingStatusCompleted
+    - BookingStatusCanceled
+  entity.City:
+    properties:
+      countryID:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      timezone:
+        type: string
+    type: object
+  entity.Country:
+    properties:
+      code:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  entity.MasterProfile:
+    properties:
+      bio:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      qrcode:
+        type: string
+      rating:
+        type: number
+      status:
+        type: string
+      updatedAt:
+        type: string
+      userID:
+        type: string
+    type: object
+  entity.MyMaster:
+    properties:
+      clientID:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      masterID:
+        type: string
+    type: object
+  entity.Payment:
+    properties:
+      amount:
+        type: number
+      clientID:
+        type: string
+      createdAt:
+        type: string
+      currency:
+        type: string
+      id:
+        type: string
+      masterID:
+        type: string
+      status:
+        $ref: '#/definitions/entity.PaymentStatus'
+      tonTransactionID:
+        type: string
+      type:
+        $ref: '#/definitions/entity.PaymentType'
+    type: object
+  entity.PaymentStatus:
+    enum:
+    - pending
+    - completed
+    - failed
+    type: string
+    x-enum-varnames:
+    - PaymentStatusPending
+    - PaymentStatusCompleted
+    - PaymentStatusFailed
+  entity.PaymentType:
+    enum:
+    - payment
+    - tip
+    type: string
+    x-enum-varnames:
+    - PaymentTypePayment
+    - PaymentTypeTip
+  entity.Review:
+    properties:
+      bookingID:
+        type: string
+      comment:
+        type: string
+      id:
+        type: string
+      rating:
+        type: integer
+    type: object
+  entity.ScheduleSlot:
+    properties:
+      bookingID:
+        type: string
+      createdAt:
+        type: string
+      date:
+        type: string
+      endTime:
+        type: string
+      id:
+        type: string
+      masterID:
+        type: string
+      slotType:
+        $ref: '#/definitions/entity.SlotType'
+      startTime:
+        type: string
+      status:
+        $ref: '#/definitions/entity.ScheduleSlotStatus'
+      updatedAt:
+        type: string
+    type: object
+  entity.ScheduleSlotStatus:
+    enum:
+    - booked
+    - free
+    - busy
+    - reserved
+    type: string
+    x-enum-varnames:
+    - ScheduleSlotStatusBooked
+    - ScheduleSlotStatusFree
+    - ScheduleSlotStatusBusy
+    - ScheduleSlotStatusReserved
+  entity.Service:
+    properties:
+      categoryID:
+        type: string
+      createdAt:
+        type: string
+      description:
+        type: string
+      duration:
+        type: string
+      id:
+        type: string
+      photoURL:
+        type: string
+      price:
+        type: number
+      title:
+        type: string
+      userID:
+        type: string
+    type: object
+  entity.ServiceCategory:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  entity.SlotType:
+    enum:
+    - manual
+    - auto
+    type: string
+    x-enum-varnames:
+    - SlotManual
+    - SlotAuto
+  entity.Subscription:
+    properties:
+      clientID:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      masterID:
+        type: string
+    type: object
+  entity.User:
+    properties:
+      cityID:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      photoURL:
+        type: string
+      role:
+        $ref: '#/definitions/entity.UserRole'
+      tgID:
+        type: integer
+      tonWallet:
+        type: string
+      updatedAt:
+        type: string
+      username:
+        type: string
+    type: object
+  entity.UserPreferences:
+    properties:
+      id:
+        type: string
+      maxDistanceKm:
+        type: integer
+      maxPrice:
+        type: number
+      preferredCategoryID:
+        type: string
+      userID:
+        type: string
+    type: object
+  entity.UserRole:
+    enum:
+    - master
+    - client
+    type: string
+    x-enum-varnames:
+    - UserRoleMaster
+    - UserRoleClient
+info:
+  contact: {}
+paths:
+  /bookings:
+    post:
+      consumes:
+      - application/json
+      description: Create a new booking with the input payload
+      parameters:
+      - description: Create booking
+        in: body
+        name: booking
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Booking'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Booking'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new booking
+      tags:
+      - bookings
+  /bookings/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a booking by booking ID
+      parameters:
+      - description: Booking ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a booking
+      tags:
+      - bookings
+    get:
+      consumes:
+      - application/json
+      description: Get booking details by booking ID
+      parameters:
+      - description: Booking ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Booking'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a booking by ID
+      tags:
+      - bookings
+    put:
+      consumes:
+      - application/json
+      description: Update booking details by booking ID
+      parameters:
+      - description: Booking ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update booking
+        in: body
+        name: booking
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Booking'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Booking'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a booking
+      tags:
+      - bookings
+  /bookings/{id}/status:
+    put:
+      consumes:
+      - application/json
+      description: Update booking status by booking ID
+      parameters:
+      - description: Booking ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Booking status
+        in: body
+        name: status
+        required: true
+        schema:
+          properties:
+            status:
+              $ref: '#/definitions/entity.BookingStatus'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Booking'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update booking status
+      tags:
+      - bookings
+  /cities:
+    post:
+      consumes:
+      - application/json
+      description: Create a new city with the input payload
+      parameters:
+      - description: Create city
+        in: body
+        name: city
+        required: true
+        schema:
+          $ref: '#/definitions/entity.City'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.City'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new city
+      tags:
+      - cities
+  /cities/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a city by city ID
+      parameters:
+      - description: City ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a city
+      tags:
+      - cities
+    get:
+      consumes:
+      - application/json
+      description: Get city details by city ID
+      parameters:
+      - description: City ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.City'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a city by ID
+      tags:
+      - cities
+    put:
+      consumes:
+      - application/json
+      description: Update city details by city ID
+      parameters:
+      - description: City ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update city
+        in: body
+        name: city
+        required: true
+        schema:
+          $ref: '#/definitions/entity.City'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.City'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a city
+      tags:
+      - cities
+  /countries:
+    post:
+      consumes:
+      - application/json
+      description: Create a new country with the input payload
+      parameters:
+      - description: Create country
+        in: body
+        name: country
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Country'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Country'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new country
+      tags:
+      - countries
+  /countries/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a country by country ID
+      parameters:
+      - description: Country ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a country
+      tags:
+      - countries
+    get:
+      consumes:
+      - application/json
+      description: Get country details by country ID
+      parameters:
+      - description: Country ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Country'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a country by ID
+      tags:
+      - countries
+    put:
+      consumes:
+      - application/json
+      description: Update country details by country ID
+      parameters:
+      - description: Country ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update country
+        in: body
+        name: country
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Country'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Country'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a country
+      tags:
+      - countries
+  /files:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload a file to the server
+      parameters:
+      - description: File to upload
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Upload a file
+      tags:
+      - files
+  /files/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Download file by file ID
+      parameters:
+      - description: File ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a file by ID
+      tags:
+      - files
+  /master_profiles:
+    post:
+      consumes:
+      - application/json
+      description: Create a new master profile with the input payload
+      parameters:
+      - description: Create master profile
+        in: body
+        name: profile
+        required: true
+        schema:
+          $ref: '#/definitions/entity.MasterProfile'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.MasterProfile'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new master profile
+      tags:
+      - master-profiles
+  /master_profiles/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a master profile by master profile ID
+      parameters:
+      - description: Master Profile ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a master profile
+      tags:
+      - master-profiles
+    get:
+      consumes:
+      - application/json
+      description: Get master profile details by master profile ID
+      parameters:
+      - description: Master Profile ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.MasterProfile'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a master profile by ID
+      tags:
+      - master-profiles
+    put:
+      consumes:
+      - application/json
+      description: Update master profile details by master profile ID
+      parameters:
+      - description: Master Profile ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update master profile
+        in: body
+        name: profile
+        required: true
+        schema:
+          $ref: '#/definitions/entity.MasterProfile'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.MasterProfile'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a master profile
+      tags:
+      - master-profiles
+  /master_profiles/{id}/rating:
+    put:
+      consumes:
+      - application/json
+      description: Update master profile rating by master profile ID
+      parameters:
+      - description: Master Profile ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Rating value
+        in: body
+        name: rating
+        required: true
+        schema:
+          properties:
+            rating:
+              type: number
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.MasterProfile'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update master profile rating
+      tags:
+      - master-profiles
+  /my_masters:
+    post:
+      consumes:
+      - application/json
+      description: Create a new my master with the input payload
+      parameters:
+      - description: Create my master
+        in: body
+        name: mymaster
+        required: true
+        schema:
+          $ref: '#/definitions/entity.MyMaster'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.MyMaster'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new my master
+      tags:
+      - my-masters
+  /my_masters/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a my master by my master ID
+      parameters:
+      - description: My Master ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a my master
+      tags:
+      - my-masters
+    get:
+      consumes:
+      - application/json
+      description: Get my master details by my master ID
+      parameters:
+      - description: My Master ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.MyMaster'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a my master by ID
+      tags:
+      - my-masters
+    put:
+      consumes:
+      - application/json
+      description: Update my master details by my master ID
+      parameters:
+      - description: My Master ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update my master
+        in: body
+        name: mymaster
+        required: true
+        schema:
+          $ref: '#/definitions/entity.MyMaster'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.MyMaster'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a my master
+      tags:
+      - my-masters
+  /payments:
+    post:
+      consumes:
+      - application/json
+      description: Create a new payment with the input payload
+      parameters:
+      - description: Create payment
+        in: body
+        name: payment
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Payment'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Payment'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new payment
+      tags:
+      - payments
+  /payments/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get payment details by payment ID
+      parameters:
+      - description: Payment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Payment'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a payment by ID
+      tags:
+      - payments
+    put:
+      consumes:
+      - application/json
+      description: Update payment details by payment ID
+      parameters:
+      - description: Payment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update payment
+        in: body
+        name: payment
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Payment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Payment'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a payment
+      tags:
+      - payments
+  /payments/{id}/status:
+    put:
+      consumes:
+      - application/json
+      description: Update payment status by payment ID
+      parameters:
+      - description: Payment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Payment status
+        in: body
+        name: status
+        required: true
+        schema:
+          properties:
+            status:
+              $ref: '#/definitions/entity.PaymentStatus'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Payment'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update payment status
+      tags:
+      - payments
+  /reviews:
+    post:
+      consumes:
+      - application/json
+      description: Create a new review with the input payload
+      parameters:
+      - description: Create review
+        in: body
+        name: review
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Review'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Review'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new review
+      tags:
+      - reviews
+  /reviews/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a review by review ID
+      parameters:
+      - description: Review ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a review
+      tags:
+      - reviews
+    get:
+      consumes:
+      - application/json
+      description: Get review details by review ID
+      parameters:
+      - description: Review ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Review'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a review by ID
+      tags:
+      - reviews
+    put:
+      consumes:
+      - application/json
+      description: Update review details by review ID
+      parameters:
+      - description: Review ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update review
+        in: body
+        name: review
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Review'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Review'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a review
+      tags:
+      - reviews
+  /schedule_slots:
+    get:
+      consumes:
+      - application/json
+      description: Get all schedule slots for a given master ID
+      parameters:
+      - description: Master ID
+        in: query
+        name: master_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.ScheduleSlot'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: List schedule slots for a master
+      tags:
+      - schedule_slots
+    post:
+      consumes:
+      - application/json
+      description: Create a new schedule slot with the input payload
+      parameters:
+      - description: Create schedule slot
+        in: body
+        name: slot
+        required: true
+        schema:
+          $ref: '#/definitions/entity.ScheduleSlot'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.ScheduleSlot'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new schedule slot
+      tags:
+      - schedule_slots
+  /schedule_slots/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a schedule slot by ID
+      parameters:
+      - description: Schedule Slot ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a schedule slot
+      tags:
+      - schedule_slots
+    get:
+      consumes:
+      - application/json
+      description: Get schedule slot details by ID
+      parameters:
+      - description: Schedule Slot ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ScheduleSlot'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a schedule slot by ID
+      tags:
+      - schedule_slots
+    put:
+      consumes:
+      - application/json
+      description: Update schedule slot details by ID
+      parameters:
+      - description: Schedule Slot ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update schedule slot
+        in: body
+        name: slot
+        required: true
+        schema:
+          $ref: '#/definitions/entity.ScheduleSlot'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ScheduleSlot'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a schedule slot
+      tags:
+      - schedule_slots
+  /service_categories:
+    post:
+      consumes:
+      - application/json
+      description: Create a new service category with the input payload
+      parameters:
+      - description: Create service category
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/entity.ServiceCategory'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.ServiceCategory'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new service category
+      tags:
+      - service-categories
+  /service_categories/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a service category by service category ID
+      parameters:
+      - description: Service Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a service category
+      tags:
+      - service-categories
+    get:
+      consumes:
+      - application/json
+      description: Get service category details by service category ID
+      parameters:
+      - description: Service Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ServiceCategory'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a service category by ID
+      tags:
+      - service-categories
+    put:
+      consumes:
+      - application/json
+      description: Update service category details by service category ID
+      parameters:
+      - description: Service Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update service category
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/entity.ServiceCategory'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ServiceCategory'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a service category
+      tags:
+      - service-categories
+  /services:
+    post:
+      consumes:
+      - application/json
+      description: Create a new service with the input payload
+      parameters:
+      - description: Create service
+        in: body
+        name: service
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Service'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Service'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new service
+      tags:
+      - services
+  /services/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a service by service ID
+      parameters:
+      - description: Service ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a service
+      tags:
+      - services
+    get:
+      consumes:
+      - application/json
+      description: Get service details by service ID
+      parameters:
+      - description: Service ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Service'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a service by ID
+      tags:
+      - services
+    put:
+      consumes:
+      - application/json
+      description: Update service details by service ID
+      parameters:
+      - description: Service ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update service
+        in: body
+        name: service
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Service'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Service'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a service
+      tags:
+      - services
+  /services/{id}/photo:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload a photo for a service
+      parameters:
+      - description: Service ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Photo file
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Upload service photo
+      tags:
+      - services
+  /subscriptions:
+    post:
+      consumes:
+      - application/json
+      description: Create a new subscription with the input payload
+      parameters:
+      - description: Create subscription
+        in: body
+        name: subscription
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Subscription'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Subscription'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new subscription
+      tags:
+      - subscriptions
+  /subscriptions/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a subscription by subscription ID
+      parameters:
+      - description: Subscription ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a subscription
+      tags:
+      - subscriptions
+    get:
+      consumes:
+      - application/json
+      description: Get subscription details by subscription ID
+      parameters:
+      - description: Subscription ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Subscription'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a subscription by ID
+      tags:
+      - subscriptions
+    put:
+      consumes:
+      - application/json
+      description: Update subscription details by subscription ID
+      parameters:
+      - description: Subscription ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update subscription
+        in: body
+        name: subscription
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Subscription'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Subscription'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a subscription
+      tags:
+      - subscriptions
+  /user_preferences:
+    post:
+      consumes:
+      - application/json
+      description: Create new user preferences with the input payload
+      parameters:
+      - description: Create user preferences
+        in: body
+        name: preferences
+        required: true
+        schema:
+          $ref: '#/definitions/entity.UserPreferences'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.UserPreferences'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create new user preferences
+      tags:
+      - user-preferences
+  /user_preferences/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete user preferences by user preferences ID
+      parameters:
+      - description: User Preferences ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete user preferences
+      tags:
+      - user-preferences
+    get:
+      consumes:
+      - application/json
+      description: Get user preferences details by user preferences ID
+      parameters:
+      - description: User Preferences ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.UserPreferences'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get user preferences by ID
+      tags:
+      - user-preferences
+    put:
+      consumes:
+      - application/json
+      description: Update user preferences details by user preferences ID
+      parameters:
+      - description: User Preferences ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update user preferences
+        in: body
+        name: preferences
+        required: true
+        schema:
+          $ref: '#/definitions/entity.UserPreferences'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.UserPreferences'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update user preferences
+      tags:
+      - user-preferences
+  /users:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user with the input payload
+      parameters:
+      - description: Create user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/entity.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.User'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new user
+      tags:
+      - users
+  /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a user by user ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a user
+      tags:
+      - users
+    get:
+      consumes:
+      - application/json
+      description: Get user details by user ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.User'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a user by ID
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Update user details by user ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/entity.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.User'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a user
+      tags:
+      - users
+  /users/{id}/photo:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload a photo for a user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Photo file
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Upload user photo
+      tags:
+      - users
+swagger: "2.0"
