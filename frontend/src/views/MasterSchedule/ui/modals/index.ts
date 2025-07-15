@@ -4,6 +4,6 @@ export { default as BookingDetailModal } from './BookingDetailModal';
 
 export { default as SlotCreationModal } from './SlotCreationModal';
 
-export { default as PendingBookingModal } from './PendingBookingModal';
+export { default as SlotFormModal } from './SlotFormModal';
 
-export { default as SlotInfoModal } from './SlotInfoModal';
+export { default as ConfirmationModal } from './ConfirmationModal';

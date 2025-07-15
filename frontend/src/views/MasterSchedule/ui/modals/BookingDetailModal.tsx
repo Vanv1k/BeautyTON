@@ -9,7 +9,16 @@ import {
   Divider,
   Alert,
 } from '@heroui/react';
-import { MessageCircle, Edit, X, Calendar, Clock, User } from 'lucide-react';
+import {
+  MessageCircle,
+  Edit,
+  X,
+  Calendar,
+  Clock,
+  CheckCircle,
+  Bell,
+  Sparkles,
+} from 'lucide-react';
 import { useCallback, useMemo } from 'react';
 
 import type { TimeSlot } from '../../lib';
@@ -18,16 +27,23 @@ type Props = {
   isOpen: boolean;
   slot: TimeSlot | null;
   onClose: () => void;
-  onUpdate: (slot: TimeSlot) => void;
-  onCancel: (slotId: string) => void;
+  onUpdate?: (slot: TimeSlot) => void;
+  onCancel?: (slotId: string) => void;
+  onConfirm?: (slotId: string, comment?: string) => void;
+  onDecline?: (slotId: string, comment?: string) => void;
+  onEdit?: (slot: TimeSlot) => void;
+  onRemind?: (slotId: string) => void;
 };
 
 const BookingDetailModal: React.FC<Props> = ({
   isOpen,
   slot,
   onClose,
-  onUpdate,
   onCancel,
+  onConfirm,
+  onDecline,
+  onEdit,
+  onRemind,
 }) => {
   // Check if the booking is in the past
   const isPastBooking = useMemo(() => {
@@ -39,6 +55,41 @@ const BookingDetailModal: React.FC<Props> = ({
 
     return bookingDate < new Date();
   }, [slot]);
+
+  const isPendingSlot = slot?.status === 'pending';
+  const isBookedSlot = slot?.status === 'booked';
+
+  const getModalTitle = () => {
+    if (isPendingSlot) {
+      return 'Pending Booking Request';
+    }
+    if (isBookedSlot && isPastBooking) {
+      return 'Past Appointment';
+    }
+    if (isBookedSlot) {
+      return 'Confirmed Booking';
+    }
+    return 'Appointment Details';
+  };
+
+  const getAttendanceAlert = () => {
+    if (!isPastBooking || !isBookedSlot || slot.clientAttended === undefined) {
+      return null;
+    }
+
+    return (
+      <Alert
+        color={slot.clientAttended ? 'success' : 'danger'}
+        variant="flat"
+        className="mb-4"
+      >
+        {slot.clientAttended
+          ? 'Client attended the appointment'
+          : 'Client did not show up for the appointment'}
+      </Alert>
+    );
+  };
+
   const handleMessageClient = useCallback(() => {
     if (slot?.client?.telegramHandle) {
       // Open Telegram chat
@@ -50,20 +101,36 @@ const BookingDetailModal: React.FC<Props> = ({
   }, [slot]);
 
   const handleEdit = useCallback(() => {
-    if (slot) {
-      // In real app, this would open edit modal
-      onUpdate(slot);
-      onUpdate(slot);
+    if (slot && onEdit) {
+      onEdit(slot);
     }
-  }, [slot, onUpdate]);
+  }, [slot, onEdit]);
 
   const handleCancel = useCallback(() => {
-    if (slot) {
+    if (slot && onCancel) {
       onCancel(slot.id);
     }
   }, [slot, onCancel]);
 
-  if (!slot || slot.status !== 'booked') {
+  const handleConfirm = useCallback(() => {
+    if (slot && onConfirm) {
+      onConfirm(slot.id);
+    }
+  }, [slot, onConfirm]);
+
+  const handleDecline = useCallback(() => {
+    if (slot && onDecline) {
+      onDecline(slot.id);
+    }
+  }, [slot, onDecline]);
+
+  const handleRemind = useCallback(() => {
+    if (slot && onRemind) {
+      onRemind(slot.id);
+    }
+  }, [slot, onRemind]);
+
+  if (!slot || (slot.status !== 'booked' && slot.status !== 'pending')) {
     return null;
   }
 
@@ -73,7 +140,6 @@ const BookingDetailModal: React.FC<Props> = ({
       onClose={onClose}
       size="sm"
       placement="bottom-center"
-      className="mb-4 mx-4"
       classNames={{
         base: 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl',
         backdrop: 'bg-black/50',
@@ -83,25 +149,38 @@ const BookingDetailModal: React.FC<Props> = ({
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-2 text-center">
-              <h3 className="text-lg font-semibold">Booking Details</h3>
+              <div className="flex items-center justify-center space-x-2">
+                <div
+                  className={`w-3 h-3 rounded-full ${
+                    isPendingSlot
+                      ? 'bg-yellow-500'
+                      : isPastBooking
+                        ? 'bg-gray-400'
+                        : 'bg-red-500'
+                  }`}
+                />
+                <h3 className="text-lg font-semibold">{getModalTitle()}</h3>
+              </div>
               <div className="flex items-center justify-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
                 <Calendar className="w-4 h-4" />
                 <span>{new Date(slot.date).toLocaleDateString()}</span>
                 <Clock className="w-4 h-4 ml-2" />
                 <span>{slot.time}</span>
               </div>
-
-              {/* Past booking warning */}
-              {isPastBooking && (
-                <Alert
-                  color="primary"
-                  variant="flat"
-                  description="This booking has been completed"
-                />
-              )}
             </ModalHeader>
 
-            <ModalBody className="py-4">
+            <ModalBody className="py-2">
+              {/* Expired pending booking warning */}
+              {isPastBooking && isPendingSlot && (
+                <Alert color="warning" variant="flat" className="mb-3">
+                  This booking request has expired as the appointment time has
+                  passed.
+                </Alert>
+              )}
+
+              {/* Attendance Alert for past booked slots */}
+              {getAttendanceAlert()}
+
               {/* Client Info */}
               <div className="flex items-center space-x-4 p-4 bg-gray-50/50 dark:bg-gray-800/50 rounded-xl">
                 <Avatar
@@ -136,7 +215,7 @@ const BookingDetailModal: React.FC<Props> = ({
                 <div className="space-y-3">
                   <div className="flex items-center space-x-2">
                     <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
-                      <User className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                      <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                     </div>
                     <div>
                       <p className="text-sm font-medium text-gray-900 dark:text-white">
@@ -181,26 +260,74 @@ const BookingDetailModal: React.FC<Props> = ({
                 </Button>
               )}
 
-              {/* Action Buttons */}
-              <div className="flex space-x-2 w-full">
-                <Button
-                  variant="flat"
-                  fullWidth
-                  startContent={<Edit className="w-4 h-4" />}
-                  onPress={handleEdit}
-                >
-                  Edit
-                </Button>
-                <Button
-                  color="danger"
-                  variant="flat"
-                  fullWidth
-                  startContent={<X className="w-4 h-4" />}
-                  onPress={handleCancel}
-                >
-                  Cancel
-                </Button>
-              </div>
+              {/* Action Buttons based on status and state */}
+              {isPendingSlot && !isPastBooking && (
+                <div className="flex space-x-2 w-full">
+                  <Button
+                    color="danger"
+                    variant="flat"
+                    fullWidth
+                    startContent={<X className="w-4 h-4" />}
+                    onPress={handleDecline}
+                  >
+                    Decline
+                  </Button>
+                  <Button
+                    color="success"
+                    fullWidth
+                    startContent={<CheckCircle className="w-4 h-4" />}
+                    onPress={handleConfirm}
+                  >
+                    Confirm
+                  </Button>
+                </div>
+              )}
+
+              {isBookedSlot && !isPastBooking && !slot.isManual && (
+                <div className="flex space-x-2 w-full">
+                  <Button
+                    color="danger"
+                    variant="flat"
+                    fullWidth
+                    startContent={<X className="w-4 h-4" />}
+                    onPress={handleCancel}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    color="primary"
+                    variant="flat"
+                    fullWidth
+                    startContent={<Bell className="w-4 h-4" />}
+                    onPress={handleRemind}
+                  >
+                    Remind
+                  </Button>
+                </div>
+              )}
+
+              {isBookedSlot && !isPastBooking && slot.isManual && (
+                <div className="flex space-x-2 w-full">
+                  <Button
+                    color="danger"
+                    variant="flat"
+                    fullWidth
+                    startContent={<X className="w-4 h-4" />}
+                    onPress={handleCancel}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    color="primary"
+                    variant="flat"
+                    fullWidth
+                    startContent={<Edit className="w-4 h-4" />}
+                    onPress={handleEdit}
+                  >
+                    Edit
+                  </Button>
+                </div>
+              )}
 
               {/* Close Button */}
               <Button variant="light" fullWidth onPress={onClose}>

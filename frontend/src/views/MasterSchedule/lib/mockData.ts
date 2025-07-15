@@ -66,7 +66,6 @@ export const generateMockSlots = (): TimeSlot[] => {
               ],
               avatar: `https://i.pravatar.cc/40?u=${Math.random()}`,
               telegramHandle:
-                '@' +
                 MOCK_TELEGRAM_HANDLES[
                   Math.floor(Math.random() * MOCK_TELEGRAM_HANDLES.length)
                 ],

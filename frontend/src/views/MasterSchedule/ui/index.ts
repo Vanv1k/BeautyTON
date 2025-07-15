@@ -6,6 +6,6 @@ export {
   CalendarModal,
   BookingDetailModal,
   SlotCreationModal,
-  PendingBookingModal,
-  SlotInfoModal,
+  SlotFormModal,
+  ConfirmationModal,
 } from './modals';
