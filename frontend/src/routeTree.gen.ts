@@ -17,6 +17,7 @@ import { Route as MasterProfileRouteImport } from './routes/master/profile'
 import { Route as MasterOnboardingRouteImport } from './routes/master/onboarding'
 import { Route as MasterDashboardRouteImport } from './routes/master/dashboard'
 import { Route as MasterMasterIdRouteImport } from './routes/master/$masterId'
+import { Route as CatalogSearchRouteImport } from './routes/catalog/search'
 import { Route as MasterMiniappSuccessRouteImport } from './routes/master/miniapp/success'
 import { Route as MasterMiniappCreateRouteImport } from './routes/master/miniapp/create'
 import { Route as MasterMiniappConnectRouteImport } from './routes/master/miniapp/connect'
@@ -61,6 +62,11 @@ const MasterMasterIdRoute = MasterMasterIdRouteImport.update({
   path: '/master/$masterId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CatalogSearchRoute = CatalogSearchRouteImport.update({
+  id: '/catalog/search',
+  path: '/catalog/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MasterMiniappSuccessRoute = MasterMiniappSuccessRouteImport.update({
   id: '/master/miniapp/success',
   path: '/master/miniapp/success',
@@ -80,6 +86,7 @@ const MasterMiniappConnectRoute = MasterMiniappConnectRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/is-not-miniapp': typeof IsNotMiniappRoute
+  '/catalog/search': typeof CatalogSearchRoute
   '/master/$masterId': typeof MasterMasterIdRoute
   '/master/dashboard': typeof MasterDashboardRoute
   '/master/onboarding': typeof MasterOnboardingRoute
@@ -93,6 +100,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/is-not-miniapp': typeof IsNotMiniappRoute
+  '/catalog/search': typeof CatalogSearchRoute
   '/master/$masterId': typeof MasterMasterIdRoute
   '/master/dashboard': typeof MasterDashboardRoute
   '/master/onboarding': typeof MasterOnboardingRoute
@@ -107,6 +115,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/is-not-miniapp': typeof IsNotMiniappRoute
+  '/catalog/search': typeof CatalogSearchRoute
   '/master/$masterId': typeof MasterMasterIdRoute
   '/master/dashboard': typeof MasterDashboardRoute
   '/master/onboarding': typeof MasterOnboardingRoute
@@ -122,6 +131,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/is-not-miniapp'
+    | '/catalog/search'
     | '/master/$masterId'
     | '/master/dashboard'
     | '/master/onboarding'
@@ -135,6 +145,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/is-not-miniapp'
+    | '/catalog/search'
     | '/master/$masterId'
     | '/master/dashboard'
     | '/master/onboarding'
@@ -148,6 +159,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/is-not-miniapp'
+    | '/catalog/search'
     | '/master/$masterId'
     | '/master/dashboard'
     | '/master/onboarding'
@@ -162,6 +174,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   IsNotMiniappRoute: typeof IsNotMiniappRoute
+  CatalogSearchRoute: typeof CatalogSearchRoute
   MasterMasterIdRoute: typeof MasterMasterIdRoute
   MasterDashboardRoute: typeof MasterDashboardRoute
   MasterOnboardingRoute: typeof MasterOnboardingRoute
@@ -231,6 +244,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MasterMasterIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/catalog/search': {
+      id: '/catalog/search'
+      path: '/catalog/search'
+      fullPath: '/catalog/search'
+      preLoaderRoute: typeof CatalogSearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/master/miniapp/success': {
       id: '/master/miniapp/success'
       path: '/master/miniapp/success'
@@ -258,6 +278,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   IsNotMiniappRoute: IsNotMiniappRoute,
+  CatalogSearchRoute: CatalogSearchRoute,
   MasterMasterIdRoute: MasterMasterIdRoute,
   MasterDashboardRoute: MasterDashboardRoute,
   MasterOnboardingRoute: MasterOnboardingRoute,
