@@ -53,14 +53,12 @@ func (r *MasterProfileRepository) List(ctx context.Context, query, category, cit
 	var profiles []entity.MasterProfile
 	var total int64
 
-	// Build query with dynamic filters
 	queryBuilder := r.db.WithContext(ctx).Model(&entity.MasterProfile{}).
 		Joins("LEFT JOIN services ON services.user_id = master_profiles.id").
 		Joins("LEFT JOIN service_categories ON service_categories.id = services.category_id").
 		Joins("LEFT JOIN users ON users.user_id = master_profiles.user_id").
 		Joins("LEFT JOIN cities ON users.city = cities.id")
 
-	// Apply filters
 	if query != "" {
 		queryBuilder = queryBuilder.Where("services.title ILIKE ?", "%"+strings.TrimSpace(query)+"%")
 	}
@@ -80,10 +78,8 @@ func (r *MasterProfileRepository) List(ctx context.Context, query, category, cit
 		queryBuilder = queryBuilder.Where("master_profiles.rating >= ?", rating)
 	}
 
-	// Group by profile to avoid duplicates from joins
 	queryBuilder = queryBuilder.Group("master_profiles.id")
 
-	// Count total profiles
 	if err := queryBuilder.Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
