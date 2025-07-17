@@ -438,6 +438,10 @@ paths:
         in: query
         name: page
         type: integer
+      - description: Search by city name (partial match)
+        in: query
+        name: query
+        type: string
       - description: 'Number of cities per page (default: 10, max: 100)'
         in: query
         name: page_size

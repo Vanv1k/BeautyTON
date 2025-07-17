@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+	"strings"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -48,17 +49,22 @@ func (r *CityRepository) Delete(ctx context.Context, id uuid.UUID) error {
 	})
 }
 
-func (r *CityRepository) ListCities(ctx context.Context, page, pageSize int) ([]entity.City, int64, error) {
+func (r *CityRepository) ListCities(ctx context.Context, query string, page, pageSize int) ([]entity.City, int64, error) {
 	var cities []entity.City
 	var total int64
 
-	if err := r.db.WithContext(ctx).Model(&entity.City{}).Count(&total).Error; err != nil {
+	queryBuilder := r.db.WithContext(ctx).Model(&entity.City{})
+
+	if query != "" {
+		queryBuilder = queryBuilder.Where("name ILIKE ?", "%"+strings.TrimSpace(query)+"%")
+	}
+
+	if err := queryBuilder.Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
 
-	// Fetch paginated cities
 	offset := (page - 1) * pageSize
-	if err := r.db.WithContext(ctx).
+	if err := queryBuilder.
 		Order("name ASC").
 		Offset(offset).
 		Limit(pageSize).

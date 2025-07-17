@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"errors"
+	"strings"
 
 	"github.com/google/uuid"
 
@@ -58,7 +59,7 @@ func (u *CityUsecase) DeleteCity(ctx context.Context, id uuid.UUID) error {
 	return u.cityRepo.Delete(ctx, id)
 }
 
-func (u *CityUsecase) ListCities(ctx context.Context, page, pageSize int) ([]entity.City, int64, error) {
+func (u *CityUsecase) ListCities(ctx context.Context, query string, page, pageSize int) ([]entity.City, int64, error) {
 	// Валидация
 	if page < 1 {
 		page = 1
@@ -69,5 +70,7 @@ func (u *CityUsecase) ListCities(ctx context.Context, page, pageSize int) ([]ent
 	if pageSize > 100 {
 		pageSize = 100
 	}
+	query = strings.TrimSpace(query)
+
 	return u.cityRepo.ListCities(ctx, page, pageSize)
 }

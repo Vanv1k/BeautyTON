@@ -148,6 +148,7 @@ func (h *CityHandler) DeleteCity(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param page query int false "Page number (default: 1)"
+// @Param query query string false "Search by city name (partial match)"
 // @Param page_size query int false "Number of cities per page (default: 10, max: 100)"
 // @Success 200 {object} map[string]interface{} "Paginated list of cities with metadata"
 // @Failure 400 {object} map[string]string
@@ -155,6 +156,7 @@ func (h *CityHandler) DeleteCity(w http.ResponseWriter, r *http.Request) {
 // @Router /cities [get]
 func (h *CityHandler) ListCities(w http.ResponseWriter, r *http.Request) {
 	// Parse query parameters
+	query := r.URL.Query().Get("query")
 	pageStr := r.URL.Query().Get("page")
 	pageSizeStr := r.URL.Query().Get("page_size")
 
@@ -187,7 +189,7 @@ func (h *CityHandler) ListCities(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Fetch paginated cities
-	cities, total, err := h.usecase.ListCities(r.Context(), page, pageSize)
+	cities, total, err := h.usecase.ListCities(r.Context(), query, page, pageSize)
 	if err != nil {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return

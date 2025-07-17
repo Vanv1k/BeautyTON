@@ -295,6 +295,12 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
+                        "type": "string",
+                        "description": "Search by city name (partial match)",
+                        "name": "query",
+                        "in": "query"
+                    },
+                    {
                         "type": "integer",
                         "description": "Number of cities per page (default: 10, max: 100)",
                         "name": "page_size",

@@ -13,5 +13,5 @@ type CityRepository interface {
 	Create(ctx context.Context, city *entity.City) error
 	Update(ctx context.Context, city *entity.City) error
 	Delete(ctx context.Context, id uuid.UUID) error
-	ListCities(ctx context.Context, page, pageSize int) ([]entity.City, int64, error)
+	ListCities(ctx context.Context, query string, page, pageSize int) ([]entity.City, int64, error)
 }
