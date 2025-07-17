@@ -85,7 +85,6 @@ func (u *MasterProfileUsecase) DeleteMasterProfile(ctx context.Context, id uuid.
 }
 
 func (u *MasterProfileUsecase) List(ctx context.Context, query, category, city string, priceFrom, priceTo int, rating float64, page, pageSize int) ([]entity.MasterProfile, int64, error) {
-	// Validate pagination parameters
 	if page < 1 {
 		page = 1
 	}

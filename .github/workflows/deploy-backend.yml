@@ -37,9 +37,12 @@ jobs:
       - name: Upload binary to server and restart
         run: |
           if [[ $GITHUB_REF == 'refs/heads/develop' ]]; then
+            ssh -o StrictHostKeyChecking=no ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "rm -f /var/www/beautyton/backend-dev/app"
             scp backend/app ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/var/www/beautyton/backend-dev/app
             ssh -o StrictHostKeyChecking=no ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "chmod +x /var/www/beautyton/backend-dev/app && systemctl restart backend-dev"
           elif [[ $GITHUB_REF == 'refs/heads/main' ]]; then
+            ssh -o StrictHostKeyChecking=no ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "rm -f /var/www/beautyton/backend-prod/app"
             scp backend/app ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/var/www/beautyton/backend-prod/app
             ssh -o StrictHostKeyChecking=no ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "chmod +x /var/www/beautyton/backend-prod/app && systemctl restart backend-prod"
           fi
+
