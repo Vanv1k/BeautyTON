@@ -432,16 +432,16 @@ paths:
     get:
       consumes:
       - application/json
-      description: Retrieve a paginated list of cities
+      description: Retrieve a paginated list of cities with optional search by name
       parameters:
-      - description: 'Page number (default: 1)'
-        in: query
-        name: page
-        type: integer
       - description: Search by city name (partial match)
         in: query
         name: query
         type: string
+      - description: 'Page number (default: 1)'
+        in: query
+        name: page
+        type: integer
       - description: 'Number of cities per page (default: 10, max: 100)'
         in: query
         name: page_size
@@ -450,7 +450,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: Paginated list of cities with metadata
+          description: Paginated list of cities with metadata under 'results' key
           schema:
             additionalProperties: true
             type: object
@@ -466,7 +466,7 @@ paths:
             additionalProperties:
               type: string
             type: object
-      summary: List cities with pagination
+      summary: List cities with pagination and search
       tags:
       - cities
     post:

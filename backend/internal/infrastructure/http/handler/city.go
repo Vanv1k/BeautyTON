@@ -142,15 +142,15 @@ func (h *CityHandler) DeleteCity(w http.ResponseWriter, r *http.Request) {
 }
 
 // ListCities godoc
-// @Summary List cities with pagination
-// @Description Retrieve a paginated list of cities
+// @Summary List cities with pagination and search
+// @Description Retrieve a paginated list of cities with optional search by name
 // @Tags cities
 // @Accept  json
 // @Produce  json
-// @Param page query int false "Page number (default: 1)"
 // @Param query query string false "Search by city name (partial match)"
+// @Param page query int false "Page number (default: 1)"
 // @Param page_size query int false "Number of cities per page (default: 10, max: 100)"
-// @Success 200 {object} map[string]interface{} "Paginated list of cities with metadata"
+// @Success 200 {object} map[string]interface{} "Paginated list of cities with metadata under 'results' key"
 // @Failure 400 {object} map[string]string
 // @Failure 500 {object} map[string]string
 // @Router /cities [get]
@@ -200,7 +200,7 @@ func (h *CityHandler) ListCities(w http.ResponseWriter, r *http.Request) {
 
 	// Prepare response
 	response := map[string]interface{}{
-		"cities": cities,
+		"results": cities,
 		"pagination": map[string]interface{}{
 			"page":        page,
 			"page_size":   pageSize,

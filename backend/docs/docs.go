@@ -276,7 +276,7 @@ const docTemplate = `{
         },
         "/cities": {
             "get": {
-                "description": "Retrieve a paginated list of cities",
+                "description": "Retrieve a paginated list of cities with optional search by name",
                 "consumes": [
                     "application/json"
                 ],
@@ -286,18 +286,18 @@ const docTemplate = `{
                 "tags": [
                     "cities"
                 ],
-                "summary": "List cities with pagination",
+                "summary": "List cities with pagination and search",
                 "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Page number (default: 1)",
-                        "name": "page",
-                        "in": "query"
-                    },
                     {
                         "type": "string",
                         "description": "Search by city name (partial match)",
                         "name": "query",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page number (default: 1)",
+                        "name": "page",
                         "in": "query"
                     },
                     {
@@ -309,7 +309,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Paginated list of cities with metadata",
+                        "description": "Paginated list of cities with metadata under 'results' key",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
