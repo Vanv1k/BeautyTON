@@ -1,5 +1,6 @@
 import { useDisclosure } from '@heroui/react';
 import { useNavigate } from '@tanstack/react-router';
+import { formatDate } from 'date-fns';
 import React, { useState } from 'react';
 
 import {
@@ -95,7 +96,7 @@ const MasterDashboard: React.FC = () => {
       date: date.getDate(),
       bookings,
       busyness,
-      fullDate: date.toISOString().split('T')[0],
+      fullDate: formatDate(date, 'yyyy-MM-dd'),
     };
   });
 
@@ -128,7 +129,9 @@ const MasterDashboard: React.FC = () => {
         {/* Upcoming Days */}
         <UpcomingDays
           upcomingDays={upcomingDays}
-          onDayPress={() => navigate({ to: '/master/dashboard' })}
+          onDayPress={(fullDate) =>
+            navigate({ to: '/master/schedule', search: { date: fullDate } })
+          }
         />
 
         {/* My Status */}

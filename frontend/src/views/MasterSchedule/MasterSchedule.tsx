@@ -1,147 +1,72 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useSearch } from '@tanstack/react-router';
+import { useState, useCallback, useEffect } from 'react';
 
+import { useScheduleSlots, useDayStatus, useModalsManager } from './model';
 import {
   BookingDetailModal,
   DailySchedule,
-  SlotCreationModal,
+  SlotFormModal,
   WeeklyHeader,
+  ConfirmationModal,
 } from './ui';
 
-// Mock data types
-export type BookingStatus = 'booked' | 'free' | 'past';
-
-export type TimeSlot = {
-  id: string;
-  time: string;
-  date: string;
-  status: BookingStatus;
-  isManual?: boolean;
-  client?: {
-    id: string;
-    name: string;
-    avatar?: string;
-    telegramHandle?: string;
-  };
-  service?: {
-    name: string;
-    duration: number; // in hours
-  };
-  comments?: string;
-};
-
-// Constants
-export const SLOT_INTERVAL = 1; // 1 hour
-
-export const WORK_START_HOUR = 8;
-
-export const WORK_END_HOUR = 22;
+import { parseDateOrToday } from '~/shared/lib/date';
 
 const MasterSchedule = () => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
-  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  const [isCreationModalOpen, setIsCreationModalOpen] = useState(false);
-  const [newSlotData, setNewSlotData] = useState<{
-    date: string;
-    time: string;
-  } | null>(null);
+  const search = useSearch({ from: '/master/schedule' });
+  const { getSlotsByDate } = useScheduleSlots();
+  const { getDayStatus } = useDayStatus();
 
-  // Mock data - in real app this would come from backend
-  const mockSlots: TimeSlot[] = useMemo(() => {
-    const today = new Date();
-    const slots: TimeSlot[] = [];
+  // Use modals manager hook
+  const {
+    selectedSlot,
+    isDetailModalOpen,
+    newSlotData,
+    isCreationModalOpen,
+    isEditModalOpen,
+    editSlot,
+    isConfirmationModalOpen,
+    confirmationConfig,
+    handleSlotClick,
+    handleBookingUpdate,
+    handleBookingCancel,
+    handleSlotCreate,
+    handleSlotUpdate,
+    handlePendingConfirm,
+    handlePendingDecline,
+    handleEdit,
+    handleRemind,
+    closeAllModals,
+  } = useModalsManager();
 
-    // Generate slots for a week
-    for (let dayOffset = -3; dayOffset <= 3; dayOffset++) {
-      const date = new Date(today);
-      date.setDate(today.getDate() + dayOffset);
-      const dateStr = date.toISOString().split('T')[0];
+  const [selectedDate, setSelectedDate] = useState(
+    parseDateOrToday(search.date),
+  );
 
-      for (let hour = WORK_START_HOUR; hour < WORK_END_HOUR; hour++) {
-        const timeStr = `${hour.toString().padStart(2, '0')}:00`;
-        const slotDateTime = new Date(date);
-        slotDateTime.setHours(hour, 0, 0, 0);
-        const isPast = slotDateTime < new Date();
+  const dailySlots = getSlotsByDate(selectedDate);
 
-        // Mock some bookings
-        const isBooked = Math.random() > 0.7 && !isPast;
+  // todo: replace with actual data fetching logic
+  useEffect(() => {
+    // сейчас используем мок-данные, в реальном приложении здесь будет логика получения слотов с сервера
+    if (search.date && search.timeSlot) {
+      const parsedDate = parseDateOrToday(search.date);
+      setSelectedDate(parsedDate);
 
-        slots.push({
-          id: `${dateStr}-${timeStr}`,
-          time: timeStr,
-          date: dateStr,
-          status: isPast ? 'past' : isBooked ? 'booked' : 'free',
-          isManual: isBooked ? Math.random() > 0.5 : false,
-          client: isBooked
-            ? {
-                id: `client-${Math.random()}`,
-                name: ['Anna K.', 'Maria S.', 'Elena P.', 'Sofia M.'][
-                  Math.floor(Math.random() * 4)
-                ],
-                avatar: `https://i.pravatar.cc/40?u=${Math.random()}`,
-                telegramHandle:
-                  '@' +
-                  ['anna_k', 'maria_s', 'elena_p', 'sofia_m'][
-                    Math.floor(Math.random() * 4)
-                  ],
-              }
-            : undefined,
-          service: isBooked
-            ? {
-                name: ['Manicure', 'Hair Cut', 'Hair Color', 'Facial'][
-                  Math.floor(Math.random() * 4)
-                ],
-                duration: [1, 2][Math.floor(Math.random() * 2)],
-              }
-            : undefined,
-          comments:
-            isBooked && Math.random() > 0.7
-              ? 'Special request: please be gentle'
-              : undefined,
-        });
+      const slot = dailySlots.find(
+        (s) =>
+          s.time === search.timeSlot &&
+          s.date === parsedDate.toISOString().split('T')[0],
+      );
+      if (slot) {
+        // Use the hook's handler to properly open the detail modal
+        handleSlotClick(slot);
       }
     }
-
-    return slots;
-  }, []);
-
-  const selectedDateStr = selectedDate.toISOString().split('T')[0];
-  const dailySlots = mockSlots.filter((slot) => slot.date === selectedDateStr);
-
-  const handleSlotClick = useCallback((slot: TimeSlot) => {
-    if (slot.status === 'booked') {
-      setSelectedSlot(slot);
-      setIsDetailModalOpen(true);
-    } else if (slot.status === 'free') {
-      setNewSlotData({
-        date: slot.date,
-        time: slot.time,
-      });
-      setIsCreationModalOpen(true);
-    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleDateChange = useCallback((date: Date) => {
     setSelectedDate(date);
-  }, []);
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleBookingUpdate = useCallback((_updatedSlot: TimeSlot) => {
-    // In real app, this would update the backend
-    setIsDetailModalOpen(false);
-  }, []);
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleBookingCancel = useCallback((_slotId: string) => {
-    // In real app, this would cancel the booking in backend
-    setIsDetailModalOpen(false);
-  }, []);
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleSlotCreate = useCallback((_slotData: Partial<TimeSlot>) => {
-    // In real app, this would create a new booking in backend
-    setIsCreationModalOpen(false);
-    setNewSlotData(null);
   }, []);
 
   return (
@@ -149,6 +74,7 @@ const MasterSchedule = () => {
       <WeeklyHeader
         selectedDate={selectedDate}
         onDateChange={handleDateChange}
+        getDayStatus={getDayStatus}
       />
 
       <main className="px-4 pb-20">
@@ -159,25 +85,50 @@ const MasterSchedule = () => {
         />
       </main>
 
-      {/* Booking Detail Modal */}
+      {/* Booking Detail Modal (for pending and booked slots) */}
       <BookingDetailModal
         isOpen={isDetailModalOpen}
         slot={selectedSlot}
-        onClose={() => setIsDetailModalOpen(false)}
+        onClose={closeAllModals}
         onUpdate={handleBookingUpdate}
         onCancel={handleBookingCancel}
+        onConfirm={handlePendingConfirm}
+        onDecline={handlePendingDecline}
+        onEdit={handleEdit}
+        onRemind={handleRemind}
       />
 
       {/* Slot Creation Modal */}
-      <SlotCreationModal
+      <SlotFormModal
         isOpen={isCreationModalOpen}
+        mode="create"
         initialData={newSlotData}
-        onClose={() => {
-          setIsCreationModalOpen(false);
-          setNewSlotData(null);
-        }}
+        onClose={closeAllModals}
         onCreate={handleSlotCreate}
       />
+
+      {/* Slot Edit Modal */}
+      <SlotFormModal
+        isOpen={isEditModalOpen}
+        mode="edit"
+        editSlot={editSlot}
+        onClose={closeAllModals}
+        onUpdate={handleSlotUpdate}
+      />
+
+      {/* Confirmation Modal */}
+      {confirmationConfig && (
+        <ConfirmationModal
+          isOpen={isConfirmationModalOpen}
+          onClose={closeAllModals}
+          onConfirm={confirmationConfig.onConfirm}
+          title={confirmationConfig.title}
+          message={confirmationConfig.message}
+          confirmButtonText={confirmationConfig.confirmButtonText}
+          confirmButtonColor={confirmationConfig.confirmButtonColor}
+          isDestructive={confirmationConfig.isDestructive}
+        />
+      )}
     </div>
   );
 };
