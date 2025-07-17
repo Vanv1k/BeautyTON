@@ -57,3 +57,17 @@ func (u *CityUsecase) UpdateCity(ctx context.Context, city *entity.City) error {
 func (u *CityUsecase) DeleteCity(ctx context.Context, id uuid.UUID) error {
 	return u.cityRepo.Delete(ctx, id)
 }
+
+func (u *CityUsecase) ListCities(ctx context.Context, page, pageSize int) ([]entity.City, int64, error) {
+	// Валидация
+	if page < 1 {
+		page = 1
+	}
+	if pageSize < 1 {
+		pageSize = 10
+	}
+	if pageSize > 100 {
+		pageSize = 100
+	}
+	return u.cityRepo.ListCities(ctx, page, pageSize)
+}

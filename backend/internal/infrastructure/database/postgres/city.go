@@ -47,3 +47,24 @@ func (r *CityRepository) Delete(ctx context.Context, id uuid.UUID) error {
 		return tx.Delete(&entity.City{}, id).Error
 	})
 }
+
+func (r *CityRepository) ListCities(ctx context.Context, page, pageSize int) ([]entity.City, int64, error) {
+	var cities []entity.City
+	var total int64
+
+	if err := r.db.WithContext(ctx).Model(&entity.City{}).Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	// Fetch paginated cities
+	offset := (page - 1) * pageSize
+	if err := r.db.WithContext(ctx).
+		Order("name ASC").
+		Offset(offset).
+		Limit(pageSize).
+		Find(&cities).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return cities, total, nil
+}

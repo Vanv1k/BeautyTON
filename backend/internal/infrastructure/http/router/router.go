@@ -40,6 +40,7 @@ func NewRouter(
 
 	// MasterProfile routes
 	router.HandleFunc("/master_profiles/{id}", masterProfileHandler.GetMasterProfile).Methods("GET")
+	router.HandleFunc("/master_profiles", masterProfileHandler.ListProfiles).Methods("GET")
 	router.HandleFunc("/master_profiles", masterProfileHandler.CreateMasterProfile).Methods("POST")
 	router.HandleFunc("/master_profiles/{id}", masterProfileHandler.UpdateMasterProfile).Methods("PUT")
 	router.HandleFunc("/master_profiles/{id}", masterProfileHandler.DeleteMasterProfile).Methods("DELETE")
@@ -87,11 +88,12 @@ func NewRouter(
 	router.HandleFunc("/payments/{id}", paymentHandler.GetPayment).Methods("GET")
 	router.HandleFunc("/payments", paymentHandler.CreatePayment).Methods("POST")
 	router.HandleFunc("/payments/{id}", paymentHandler.UpdatePayment).Methods("PUT")
-	// router.HandleFunc("/payments/{id}", paymentHandler.DeletePayment).Methods("DELETE")
+	//router.HandleFunc("/payments/{id}", paymentHandler.DeletePayment).Methods("DELETE")
 	router.HandleFunc("/payments/{id}/status", paymentHandler.UpdatePaymentStatus).Methods("PUT")
 
 	// City routes
 	router.HandleFunc("/cities/{id}", cityHandler.GetCity).Methods("GET")
+	router.HandleFunc("/cities", cityHandler.ListCities).Methods("GET")
 	router.HandleFunc("/cities", cityHandler.CreateCity).Methods("POST")
 	router.HandleFunc("/cities/{id}", cityHandler.UpdateCity).Methods("PUT")
 	router.HandleFunc("/cities/{id}", cityHandler.DeleteCity).Methods("DELETE")

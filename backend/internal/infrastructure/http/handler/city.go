@@ -3,12 +3,15 @@ package handler
 import (
 	"encoding/json"
 	"errors"
+	"net/http"
+	"strconv"
+
+	"github.com/google/uuid"
+	"github.com/gorilla/mux"
+
 	"github.com/Vanv1k/BeautyTON/internal/domain/entity"
 	er "github.com/Vanv1k/BeautyTON/internal/domain/errors"
 	"github.com/Vanv1k/BeautyTON/internal/usecase"
-	"github.com/google/uuid"
-	"github.com/gorilla/mux"
-	"net/http"
 )
 
 type CityHandler struct {
@@ -136,4 +139,75 @@ func (h *CityHandler) DeleteCity(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
+}
+
+// ListCities godoc
+// @Summary List cities with pagination
+// @Description Retrieve a paginated list of cities
+// @Tags cities
+// @Accept  json
+// @Produce  json
+// @Param page query int false "Page number (default: 1)"
+// @Param page_size query int false "Number of cities per page (default: 10, max: 100)"
+// @Success 200 {object} map[string]interface{} "Paginated list of cities with metadata"
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /cities [get]
+func (h *CityHandler) ListCities(w http.ResponseWriter, r *http.Request) {
+	// Parse query parameters
+	pageStr := r.URL.Query().Get("page")
+	pageSizeStr := r.URL.Query().Get("page_size")
+
+	// Default values
+	page := 1
+	pageSize := 10
+	maxPageSize := 100
+
+	// Parse and validate page
+	if pageStr != "" {
+		var err error
+		page, err = strconv.Atoi(pageStr)
+		if err != nil || page < 1 {
+			http.Error(w, "Invalid page number", http.StatusBadRequest)
+			return
+		}
+	}
+
+	// Parse and validate page_size
+	if pageSizeStr != "" {
+		var err error
+		pageSize, err = strconv.Atoi(pageSizeStr)
+		if err != nil || pageSize < 1 {
+			http.Error(w, "Invalid page size", http.StatusBadRequest)
+			return
+		}
+		if pageSize > maxPageSize {
+			pageSize = maxPageSize
+		}
+	}
+
+	// Fetch paginated cities
+	cities, total, err := h.usecase.ListCities(r.Context(), page, pageSize)
+	if err != nil {
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Calculate total pages
+	totalPages := int((total + int64(pageSize) - 1) / int64(pageSize))
+
+	// Prepare response
+	response := map[string]interface{}{
+		"cities": cities,
+		"pagination": map[string]interface{}{
+			"page":        page,
+			"page_size":   pageSize,
+			"total":       total,
+			"total_pages": totalPages,
+		},
+	}
+
+	// Send response
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
 }

@@ -429,6 +429,42 @@ paths:
       tags:
       - bookings
   /cities:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a paginated list of cities
+      parameters:
+      - description: 'Page number (default: 1)'
+        in: query
+        name: page
+        type: integer
+      - description: 'Number of cities per page (default: 10, max: 100)'
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Paginated list of cities with metadata
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: List cities with pagination
+      tags:
+      - cities
     post:
       consumes:
       - application/json
@@ -766,6 +802,67 @@ paths:
       summary: Get a file by ID
       tags:
       - files
+  /master-profiles:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a paginated list of master profiles with optional filters
+      parameters:
+      - description: Search by profile name (partial match)
+        in: query
+        name: query
+        type: string
+      - description: Filter by category (e.g., hairdresser, nail_technician)
+        in: query
+        name: category
+        type: string
+      - description: Filter by city name (partial match)
+        in: query
+        name: city
+        type: string
+      - description: Minimum service price
+        in: query
+        name: priceFrom
+        type: integer
+      - description: Maximum service price
+        in: query
+        name: priceTo
+        type: integer
+      - description: Minimum profile rating (0 to 5)
+        in: query
+        name: rating
+        type: number
+      - description: 'Page number (default: 1)'
+        in: query
+        name: page
+        type: integer
+      - description: 'Number of profiles per page (default: 10, max: 100)'
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Paginated list of profiles with metadata
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: List profiles with pagination and filters
+      tags:
+      - master-profiles
   /master_profiles:
     post:
       consumes:
