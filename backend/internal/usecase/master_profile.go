@@ -3,92 +3,116 @@ package usecase
 import (
 	"context"
 	"errors"
+	"strings"
+
+	"github.com/google/uuid"
+
 	"github.com/Vanv1k/BeautyTON/internal/domain/entity"
 	"github.com/Vanv1k/BeautyTON/internal/domain/repository"
-	"github.com/google/uuid"
-	"time"
 )
 
-type BookingUsecase struct {
-	bookingRepo repository.BookingRepository
-	userRepo    repository.UserRepository
-	serviceRepo repository.ServiceRepository
+type MasterProfileUsecase struct {
+	masterProfileRepo repository.MasterProfileRepository
+	userRepo          repository.UserRepository
 }
 
-func NewBookingUsecase(bookingRepo repository.BookingRepository, userRepo repository.UserRepository, serviceRepo repository.ServiceRepository) *BookingUsecase {
-	return &BookingUsecase{bookingRepo: bookingRepo, userRepo: userRepo, serviceRepo: serviceRepo}
+func NewMasterProfileUsecase(masterProfileRepo repository.MasterProfileRepository, userRepo repository.UserRepository) *MasterProfileUsecase {
+	return &MasterProfileUsecase{masterProfileRepo: masterProfileRepo, userRepo: userRepo}
 }
 
-func (u *BookingUsecase) GetBooking(ctx context.Context, id uuid.UUID) (*entity.Booking, error) {
-	return u.bookingRepo.GetByID(ctx, id)
+func (u *MasterProfileUsecase) GetMasterProfile(ctx context.Context, id uuid.UUID) (*entity.MasterProfile, error) {
+	return u.masterProfileRepo.GetByID(ctx, id)
 }
 
-func (u *BookingUsecase) CreateBooking(ctx context.Context, booking *entity.Booking) error {
+func (u *MasterProfileUsecase) CreateMasterProfile(ctx context.Context, profile *entity.MasterProfile) error {
 	// Валидация бизнес-логики
-	if booking.ClientID == uuid.Nil || booking.MasterID == uuid.Nil || booking.ServiceID == uuid.Nil {
-		return errors.New("client_id, master_id, and service_id are required")
+	if profile.UserID != nil {
+		user, err := u.userRepo.GetByID(ctx, *profile.UserID)
+		if err != nil {
+			return err
+		}
+		if user.Role != entity.UserRoleMaster {
+			return errors.New("user must have master role")
+		}
 	}
-	if booking.BookingTime.Before(time.Now()) {
-		return errors.New("booking_time must be in the future")
+	if profile.QRCode == "" {
+		return errors.New("qr_code is required")
 	}
-	if booking.Status != entity.BookingStatusPending && booking.Status != entity.BookingStatusConfirmed &&
-		booking.Status != entity.BookingStatusCompleted && booking.Status != entity.BookingStatusCanceled {
-		return errors.New("invalid booking status")
+	if profile.Rating < 0 || profile.Rating > 5 {
+		return errors.New("rating must be between 0 and 5")
 	}
-	// Проверяем, что клиент и мастер существуют
-	client, err := u.userRepo.GetByID(ctx, booking.ClientID)
-	if err != nil {
-		return err
-	}
-	if client.Role != entity.UserRoleClient {
-		return errors.New("client_id must refer to a client")
-	}
-	master, err := u.userRepo.GetByID(ctx, booking.MasterID)
-	if err != nil {
-		return err
-	}
-	if master.Role != entity.UserRoleMaster {
-		return errors.New("master_id must refer to a master")
-	}
-	// Проверяем, что услуга существует
-	if _, err := u.serviceRepo.GetByID(ctx, booking.ServiceID); err != nil {
-		return err
-	}
-	return u.bookingRepo.Create(ctx, booking)
+	return u.masterProfileRepo.Create(ctx, profile)
 }
 
-func (u *BookingUsecase) UpdateBooking(ctx context.Context, booking *entity.Booking) error {
+func (u *MasterProfileUsecase) UpdateMasterProfile(ctx context.Context, profile *entity.MasterProfile) error {
 	// Валидация бизнес-логики
-	if booking.ClientID == uuid.Nil || booking.MasterID == uuid.Nil || booking.ServiceID == uuid.Nil {
-		return errors.New("client_id, master_id, and service_id are required")
+	if profile.UserID != nil {
+		user, err := u.userRepo.GetByID(ctx, *profile.UserID)
+		if err != nil {
+			return err
+		}
+		if user.Role != entity.UserRoleMaster {
+			return errors.New("user must have master role")
+		}
 	}
-	if booking.BookingTime.Before(time.Now()) {
-		return errors.New("booking_time must be in the future")
+	if profile.QRCode == "" {
+		return errors.New("qr_code is required")
 	}
-	if booking.Status != entity.BookingStatusPending && booking.Status != entity.BookingStatusConfirmed &&
-		booking.Status != entity.BookingStatusCompleted && booking.Status != entity.BookingStatusCanceled {
-		return errors.New("invalid booking status")
+	if profile.Rating < 0 || profile.Rating > 5 {
+		return errors.New("rating must be between 0 and 5")
 	}
-	return u.bookingRepo.Update(ctx, booking)
+	return u.masterProfileRepo.Update(ctx, profile)
 }
 
-func (u *BookingUsecase) UpdateBookingStatus(ctx context.Context, id uuid.UUID, status entity.BookingStatus) (*entity.Booking, error) {
+func (u *MasterProfileUsecase) UpdateMasterProfileRating(ctx context.Context, id uuid.UUID, rating float64) (*entity.MasterProfile, error) {
 	// Валидация бизнес-логики
-	if status != entity.BookingStatusPending && status != entity.BookingStatusConfirmed &&
-		status != entity.BookingStatusCompleted && status != entity.BookingStatusCanceled {
-		return nil, errors.New("invalid booking status")
+	if rating < 0 || rating > 5 {
+		return nil, errors.New("rating must be between 0 and 5")
 	}
-	booking, err := u.bookingRepo.GetByID(ctx, id)
+	profile, err := u.masterProfileRepo.GetByID(ctx, id)
 	if err != nil {
 		return nil, err
 	}
-	booking.Status = status
-	if err := u.bookingRepo.Update(ctx, booking); err != nil {
+	profile.Rating = rating
+	if err := u.masterProfileRepo.Update(ctx, profile); err != nil {
 		return nil, err
 	}
-	return booking, nil
+	return profile, nil
 }
 
-func (u *BookingUsecase) DeleteBooking(ctx context.Context, id uuid.UUID) error {
-	return u.bookingRepo.Delete(ctx, id)
+func (u *MasterProfileUsecase) DeleteMasterProfile(ctx context.Context, id uuid.UUID) error {
+	return u.masterProfileRepo.Delete(ctx, id)
+}
+
+func (u *MasterProfileUsecase) List(ctx context.Context, query, category, city string, priceFrom, priceTo int, rating float64, page, pageSize int) ([]entity.MasterProfile, int64, error) {
+	// Validate pagination parameters
+	if page < 1 {
+		page = 1
+	}
+	if pageSize < 1 {
+		pageSize = 10
+	}
+	if pageSize > 100 {
+		pageSize = 100
+	}
+
+	// Validate price range
+	if priceFrom < 0 || priceTo < 0 {
+		return nil, 0, errors.New("priceFrom and priceTo must be non-negative")
+	}
+	if priceFrom > priceTo && priceTo != 0 {
+		return nil, 0, errors.New("priceFrom cannot be greater than priceTo")
+	}
+
+	// Validate rating
+	if rating < 0 || rating > 5 {
+		return nil, 0, errors.New("rating must be between 0 and 5")
+	}
+
+	// Trim query and city strings
+	query = strings.TrimSpace(query)
+	city = strings.TrimSpace(city)
+	category = strings.TrimSpace(category)
+
+	return u.masterProfileRepo.List(ctx, query, category, city, priceFrom, priceTo, rating, page, pageSize)
 }

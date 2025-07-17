@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+	"strings"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -46,4 +47,57 @@ func (r *MasterProfileRepository) Delete(ctx context.Context, id uuid.UUID) erro
 	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		return tx.Delete(&entity.MasterProfile{}, id).Error
 	})
+}
+
+func (r *MasterProfileRepository) List(ctx context.Context, query, category, city string, priceFrom, priceTo int, rating float64, page, pageSize int) ([]entity.MasterProfile, int64, error) {
+	var profiles []entity.MasterProfile
+	var total int64
+
+	// Build query with dynamic filters
+	queryBuilder := r.db.WithContext(ctx).Model(&entity.MasterProfile{}).
+		Joins("LEFT JOIN services ON services.user_id = master_profiles.id").
+		Joins("LEFT JOIN service_categories ON service_categories.id = services.category_id").
+		Joins("LEFT JOIN users ON users.user_id = master_profiles.user_id").
+		Joins("LEFT JOIN cities ON users.city = cities.id")
+
+	// Apply filters
+	if query != "" {
+		queryBuilder = queryBuilder.Where("services.title ILIKE ?", "%"+strings.TrimSpace(query)+"%")
+	}
+	if category != "" {
+		queryBuilder = queryBuilder.Where("service_categories.name = ?", category)
+	}
+	if city != "" {
+		queryBuilder = queryBuilder.Where("cities.name ILIKE ?", "%"+strings.TrimSpace(city)+"%")
+	}
+	if priceFrom > 0 {
+		queryBuilder = queryBuilder.Where("services.price >= ?", priceFrom)
+	}
+	if priceTo > 0 {
+		queryBuilder = queryBuilder.Where("services.price <= ?", priceTo)
+	}
+	if rating > 0 {
+		queryBuilder = queryBuilder.Where("master_profiles.rating >= ?", rating)
+	}
+
+	// Group by profile to avoid duplicates from joins
+	queryBuilder = queryBuilder.Group("master_profiles.id")
+
+	// Count total profiles
+	if err := queryBuilder.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	// Fetch paginated profiles
+	offset := (page - 1) * pageSize
+	if err := queryBuilder.
+		Order("master_profiles.name ASC").
+		Offset(offset).
+		Limit(pageSize).
+		Select("master_profiles.*").
+		Find(&profiles).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return profiles, total, nil
 }
