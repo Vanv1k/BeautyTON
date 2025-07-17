@@ -72,5 +72,5 @@ func (u *CityUsecase) ListCities(ctx context.Context, query string, page, pageSi
 	}
 	query = strings.TrimSpace(query)
 
-	return u.cityRepo.ListCities(ctx, page, pageSize)
+	return u.cityRepo.ListCities(ctx, query, page, pageSize)
 }
