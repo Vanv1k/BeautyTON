@@ -17,3 +17,26 @@ backend/*.so
 backend/*.dylib
 backend/tmp/
 *.log
+
+#ton
+temp
+build
+package.ts
+
+# VS Code
+.vscode/*
+.history/
+*.vsix
+
+# IDEA files
+.idea
+
+# VIM
+Session.vim
+.vim/
+
+# Other private editor folders
+.nvim/
+.emacs/
+.helix/
+
