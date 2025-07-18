@@ -83,7 +83,11 @@ func (h *ScheduleSlotHandler) ListScheduleSlots(w http.ResponseWriter, r *http.R
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(slots)
+	response := map[string]interface{}{
+		"results": slots,
+	}
+
+	json.NewEncoder(w).Encode(response)
 }
 
 // CreateScheduleSlot godoc
