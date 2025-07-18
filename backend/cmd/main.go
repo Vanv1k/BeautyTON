@@ -2,8 +2,12 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"os"
 	"time"
+
+	"github.com/joho/godotenv"
 
 	"github.com/Vanv1k/BeautyTON/internal/config"
 	"github.com/Vanv1k/BeautyTON/internal/infrastructure/database/postgres"
@@ -32,6 +36,15 @@ import (
 
 func main() {
 	cfg := config.Load()
+
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found, relying on system environment variables")
+	}
+
+	botToken := os.Getenv("TELEGRAM_BOT_TOKEN")
+	if botToken == "" {
+		log.Fatal("TELEGRAM_BOT_TOKEN not set")
+	}
 
 	pg, err := postgres.NewPostgresRepo(cfg.Postgres)
 	if err != nil {
@@ -104,6 +117,8 @@ func main() {
 		cityHandler,
 		countryHandler,
 		fileHandler,
+		userUsecase,
+		botToken,
 	)
 
 	// Запуск сервера
