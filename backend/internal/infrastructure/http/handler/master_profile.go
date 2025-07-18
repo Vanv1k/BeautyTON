@@ -76,7 +76,10 @@ func (h *MasterProfileHandler) CreateMasterProfile(w http.ResponseWriter, r *htt
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(profile)
+	response := map[string]interface{}{
+		"results": profile,
+	}
+	json.NewEncoder(w).Encode(response)
 }
 
 // UpdateMasterProfile godoc
