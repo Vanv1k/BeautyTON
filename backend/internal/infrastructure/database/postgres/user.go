@@ -30,6 +30,17 @@ func (r *UserRepository) GetByID(ctx context.Context, id uuid.UUID) (*entity.Use
 	return &user, nil
 }
 
+func (r *UserRepository) GetByTelegramID(ctx context.Context, telegramID int64) (*entity.User, error) {
+	var user entity.User
+	if err := r.db.WithContext(ctx).First(&user, telegramID).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, errors.ErrRecordNotFound
+		}
+		return nil, err
+	}
+	return &user, nil
+}
+
 func (r *UserRepository) Create(ctx context.Context, user *entity.User) error {
 	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		return tx.Create(user).Error

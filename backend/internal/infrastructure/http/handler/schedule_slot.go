@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
@@ -15,11 +14,13 @@ import (
 )
 
 type ScheduleSlotHandler struct {
-	usecase *usecase.ScheduleSlotUsecase
+	usecase     *usecase.ScheduleSlotUsecase
+	userUsecase *usecase.UserUsecase
 }
 
-func NewScheduleSlotHandler(usecase *usecase.ScheduleSlotUsecase) *ScheduleSlotHandler {
-	return &ScheduleSlotHandler{usecase: usecase}
+func NewScheduleSlotHandler(usecase *usecase.ScheduleSlotUsecase,
+	userUsecase *usecase.UserUsecase) *ScheduleSlotHandler {
+	return &ScheduleSlotHandler{usecase: usecase, userUsecase: userUsecase}
 }
 
 // GetScheduleSlot godoc
@@ -83,7 +84,11 @@ func (h *ScheduleSlotHandler) ListScheduleSlots(w http.ResponseWriter, r *http.R
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(slots)
+	response := map[string]interface{}{
+		"results": slots,
+	}
+
+	json.NewEncoder(w).Encode(response)
 }
 
 // CreateScheduleSlot godoc
@@ -99,24 +104,43 @@ func (h *ScheduleSlotHandler) ListScheduleSlots(w http.ResponseWriter, r *http.R
 // @Failure 404 {object} map[string]string
 // @Router /schedule_slots [post]
 func (h *ScheduleSlotHandler) CreateScheduleSlot(w http.ResponseWriter, r *http.Request) {
+	telegramUserID, ok := r.Context().Value("telegram_user_id").(int64)
+	if !ok {
+		http.Error(w, "Unauthorized: Telegram user ID missing", http.StatusUnauthorized)
+		return
+	}
+
 	var slot entity.ScheduleSlot
 	if err := json.NewDecoder(r.Body).Decode(&slot); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
-	slot.ID = uuid.New()
-	slot.CreatedAt = time.Now()
-	slot.UpdatedAt = time.Now()
-	if err := h.usecase.CreateScheduleSlot(r.Context(), &slot); err != nil {
-		if err.Error() == "master profile not found" || err.Error() == "booking not found" {
-			http.Error(w, err.Error(), http.StatusNotFound)
-		} else if err.Error() == "unauthorized" {
-			http.Error(w, err.Error(), http.StatusUnauthorized)
-		} else {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+
+	// Get MasterID for the authenticated user
+	master, err := h.userUsecase.GetUserByTelegramID(r.Context(), telegramUserID)
+	if err != nil {
+		if errors.Is(err, er.ErrRecordNotFound) {
+			http.Error(w, "Master profile not found for this user", http.StatusForbidden)
+			return
 		}
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
+
+	// Check if master_id in request body matches authenticated master
+	if slot.MasterID != uuid.Nil && slot.MasterID != master.ID {
+		http.Error(w, "Cannot create slot for another master", http.StatusForbidden)
+		return
+	}
+
+	// Set master_id from authenticated user
+	slot.MasterID = master.ID
+
+	if err := h.usecase.CreateScheduleSlot(r.Context(), &slot); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(slot)
@@ -136,29 +160,70 @@ func (h *ScheduleSlotHandler) CreateScheduleSlot(w http.ResponseWriter, r *http.
 // @Failure 404 {object} map[string]string
 // @Router /schedule_slots/{id} [put]
 func (h *ScheduleSlotHandler) UpdateScheduleSlot(w http.ResponseWriter, r *http.Request) {
+	telegramUserID, ok := r.Context().Value("telegram_user_id").(int64)
+	if !ok {
+		http.Error(w, "Unauthorized: Telegram user ID missing", http.StatusUnauthorized)
+		return
+	}
+
 	vars := mux.Vars(r)
 	id, err := uuid.Parse(vars["id"])
 	if err != nil {
 		http.Error(w, "Invalid ID", http.StatusBadRequest)
 		return
 	}
+
 	var slot entity.ScheduleSlot
 	if err := json.NewDecoder(r.Body).Decode(&slot); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
 	slot.ID = id
-	slot.UpdatedAt = time.Now()
+
+	// Get MasterID for the authenticated user
+	master, err := h.userUsecase.GetUserByTelegramID(r.Context(), telegramUserID)
+	if err != nil {
+		if errors.Is(err, er.ErrRecordNotFound) {
+			http.Error(w, "Master profile not found for this user", http.StatusForbidden)
+			return
+		}
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Check if the slot belongs to the authenticated master
+	existingSlot, err := h.usecase.GetScheduleSlot(r.Context(), id)
+	if err != nil {
+		if errors.Is(err, er.ErrRecordNotFound) {
+			http.Error(w, "Schedule slot not found", http.StatusNotFound)
+		} else {
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+		}
+		return
+	}
+	if existingSlot.MasterID != master.ID {
+		http.Error(w, "Cannot update slot for another master", http.StatusForbidden)
+		return
+	}
+
+	// Check if master_id in request body matches authenticated master
+	if slot.MasterID != uuid.Nil && slot.MasterID != master.ID {
+		http.Error(w, "Cannot update slot with another master's ID", http.StatusForbidden)
+		return
+	}
+
+	// Set master_id from authenticated user
+	slot.MasterID = master.ID
+
 	if err := h.usecase.UpdateScheduleSlot(r.Context(), &slot); err != nil {
-		if err.Error() == "master profile not found" || err.Error() == "booking not found" || errors.Is(err, er.ErrRecordNotFound) {
-			http.Error(w, err.Error(), http.StatusNotFound)
-		} else if err.Error() == "unauthorized" {
-			http.Error(w, err.Error(), http.StatusUnauthorized)
+		if errors.Is(err, er.ErrRecordNotFound) {
+			http.Error(w, "Schedule slot not found", http.StatusNotFound)
 		} else {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 		}
 		return
 	}
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(slot)
 }
@@ -176,21 +241,53 @@ func (h *ScheduleSlotHandler) UpdateScheduleSlot(w http.ResponseWriter, r *http.
 // @Failure 404 {object} map[string]string
 // @Router /schedule_slots/{id} [delete]
 func (h *ScheduleSlotHandler) DeleteScheduleSlot(w http.ResponseWriter, r *http.Request) {
+	telegramUserID, ok := r.Context().Value("telegram_user_id").(int64)
+	if !ok {
+		http.Error(w, "Unauthorized: Telegram user ID missing", http.StatusUnauthorized)
+		return
+	}
+
 	vars := mux.Vars(r)
 	id, err := uuid.Parse(vars["id"])
 	if err != nil {
 		http.Error(w, "Invalid ID", http.StatusBadRequest)
 		return
 	}
-	if err := h.usecase.DeleteScheduleSlot(r.Context(), id); err != nil {
+
+	// Get MasterID for the authenticated user
+	master, err := h.userUsecase.GetUserByTelegramID(r.Context(), telegramUserID)
+	if err != nil {
+		if errors.Is(err, er.ErrRecordNotFound) {
+			http.Error(w, "Master profile not found for this user", http.StatusForbidden)
+			return
+		}
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Check if the slot belongs to the authenticated master
+	slot, err := h.usecase.GetScheduleSlot(r.Context(), id)
+	if err != nil {
 		if errors.Is(err, er.ErrRecordNotFound) {
 			http.Error(w, "Schedule slot not found", http.StatusNotFound)
-		} else if err.Error() == "unauthorized" {
-			http.Error(w, err.Error(), http.StatusUnauthorized)
 		} else {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 		}
 		return
 	}
+	if slot.MasterID != master.ID {
+		http.Error(w, "Cannot delete slot for another master", http.StatusForbidden)
+		return
+	}
+
+	if err := h.usecase.DeleteScheduleSlot(r.Context(), id); err != nil {
+		if errors.Is(err, er.ErrRecordNotFound) {
+			http.Error(w, "Schedule slot not found", http.StatusNotFound)
+		} else {
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+		}
+		return
+	}
+
 	w.WriteHeader(http.StatusNoContent)
 }

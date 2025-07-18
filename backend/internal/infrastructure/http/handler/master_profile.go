@@ -76,7 +76,10 @@ func (h *MasterProfileHandler) CreateMasterProfile(w http.ResponseWriter, r *htt
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(profile)
+	response := map[string]interface{}{
+		"results": profile,
+	}
+	json.NewEncoder(w).Encode(response)
 }
 
 // UpdateMasterProfile godoc
@@ -277,13 +280,11 @@ func (h *MasterProfileHandler) ListProfiles(w http.ResponseWriter, r *http.Reque
 
 	// Prepare response
 	response := map[string]interface{}{
-		"profiles": profiles,
-		"pagination": map[string]interface{}{
-			"page":        page,
-			"page_size":   pageSize,
-			"total":       total,
-			"total_pages": totalPages,
-		},
+		"results":     profiles,
+		"page":        page,
+		"page_size":   pageSize,
+		"total":       total,
+		"total_pages": totalPages,
 	}
 
 	// Send response

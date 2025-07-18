@@ -8,6 +8,7 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/Vanv1k/BeautyTON/internal/domain/entity"
+	er "github.com/Vanv1k/BeautyTON/internal/domain/errors"
 	"github.com/Vanv1k/BeautyTON/internal/domain/repository"
 )
 
@@ -69,4 +70,12 @@ func (u *UserUsecase) UploadUserPhoto(ctx context.Context, userID uuid.UUID, fil
 	// Обновляем PhotoURL
 	user.PhotoURL = file.ID
 	return u.userRepo.Update(ctx, user)
+}
+
+func (u *UserUsecase) GetUserByTelegramID(ctx context.Context, telegramID int64) (*entity.User, error) {
+	user, err := u.userRepo.GetByTelegramID(ctx, telegramID)
+	if err != nil {
+		return nil, er.ErrRecordNotFound
+	}
+	return user, nil
 }
