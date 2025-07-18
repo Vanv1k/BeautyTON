@@ -12,16 +12,37 @@ import (
 )
 
 var allowedOrigins = map[string]bool{
-	"http://localhost:3000":     true,
+	"localhost:3000":     true,
 	"dev.miniapp.beautyton.com": true,
-	"miniapp.beautyton.com ":    true,
+	"miniapp.beautyton.com":    true,
+}
+
+// todo: refactor this function to be more generic
+func isPinggySubdomain(origin string) bool {
+	if origin == "" {
+		return false
+	}
+
+	// Check if the origin is a subdomain of pinggy.link
+	if len(origin) > 12 && origin[len(origin)-12:] == "pinggy.link" {
+		return true
+	}
+
+	// Check for subdomains like *.pinggy.link
+	if len(origin) > 13 && origin[len(origin)-13:] == ".pinggy.link" {
+		return true
+	}
+
+	return false
 }
 
 func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		origin := r.Header.Get("Origin")
 
-		if allowedOrigins[origin] {
+		// Allow exact matches and subdomains for pinggy.link
+		if allowedOrigins[origin] ||
+			(isPinggySubdomain(origin)) {
 			w.Header().Set("Access-Control-Allow-Origin", origin)
 			w.Header().Set("Vary", "Origin")
 		}
