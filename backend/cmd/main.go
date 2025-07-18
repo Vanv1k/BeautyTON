@@ -94,7 +94,7 @@ func main() {
 	serviceHandler := handler.NewServiceHandler(serviceUsecase)
 	serviceCategoryHandler := handler.NewServiceCategoryHandler(serviceCategoryUsecase)
 	bookingHandler := handler.NewBookingHandler(bookingUsecase)
-	scheduleSlotHandler := handler.NewScheduleSlotHandler(scheduleSlotUsecase)
+	scheduleSlotHandler := handler.NewScheduleSlotHandler(scheduleSlotUsecase, userUsecase)
 	reviewHandler := handler.NewReviewHandler(reviewUsecase)
 	paymentHandler := handler.NewPaymentHandler(paymentUsecase)
 	cityHandler := handler.NewCityHandler(cityUsecase)
