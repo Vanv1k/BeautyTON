@@ -277,13 +277,11 @@ func (h *MasterProfileHandler) ListProfiles(w http.ResponseWriter, r *http.Reque
 
 	// Prepare response
 	response := map[string]interface{}{
-		"profiles": profiles,
-		"pagination": map[string]interface{}{
-			"page":        page,
-			"page_size":   pageSize,
-			"total":       total,
-			"total_pages": totalPages,
-		},
+		"results":     profiles,
+		"page":        page,
+		"page_size":   pageSize,
+		"total":       total,
+		"total_pages": totalPages,
 	}
 
 	// Send response
