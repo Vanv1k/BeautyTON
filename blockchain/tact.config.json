@@ -2,9 +2,9 @@
   "$schema": "https://raw.githubusercontent.com/tact-lang/tact/main/src/config/configSchema.json",
   "projects": [
     {
-      "name": "ServicePayment",
-      "path": "contracts/service_payment.tact",
-      "output": "build/ServicePayment",
+      "name": "BeautyEscrowV1",
+      "path": "contracts/beauty_escrow_v1.tact",
+      "output": "build/BeautyEscrowV1",
       "options": {
         "debug": false,
         "external": false
