@@ -71,10 +71,6 @@ BeautyTON is fully integrated with Telegram's modern developer stack:
 This is an active **hackathon MVP**. Most flows are working with mocked data or placeholders.  
 Integration with TON and real backend APIs is in progress.
 
-## License
-
-MIT — open for contribution.
-
 ## Team
 
 BeautyTON is developed by a small team of fullstack and blockchain developers participating in hackathons and public Web3 initiatives.
