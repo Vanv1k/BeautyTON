@@ -1,8 +1,6 @@
 package router
 
 import (
-	"net/http"
-
 	"github.com/gorilla/mux"
 	httpSwagger "github.com/swaggo/http-swagger"
 
