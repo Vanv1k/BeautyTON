@@ -123,10 +123,10 @@ func NewRouter(
 
 	// Service routes
 	router.HandleFunc("/services/{id}", serviceHandler.GetService).Methods("GET", "OPTIONS")
-	router.Handle("/services", masterOnly(http.HandlerFunc(serviceHandler.CreateService))).Methods("POST", "OPTIONS")
-	router.Handle("/services/{id}", masterOnly(http.HandlerFunc(serviceHandler.UpdateService))).Methods("PUT", "OPTIONS")
-	router.Handle("/services/{id}", masterOnly(http.HandlerFunc(serviceHandler.DeleteService))).Methods("DELETE", "OPTIONS")
-	router.Handle("/services/{id}/photo", masterOnly(http.HandlerFunc(serviceHandler.UploadServicePhoto))).Methods("POST", "OPTIONS")
+	// router.Handle("/services", masterOnly(http.HandlerFunc(serviceHandler.CreateService))).Methods("POST", "OPTIONS")
+	// router.Handle("/services/{id}", masterOnly(http.HandlerFunc(serviceHandler.UpdateService))).Methods("PUT", "OPTIONS")
+	// router.Handle("/services/{id}", masterOnly(http.HandlerFunc(serviceHandler.DeleteService))).Methods("DELETE", "OPTIONS")
+	// router.Handle("/services/{id}/photo", masterOnly(http.HandlerFunc(serviceHandler.UploadServicePhoto))).Methods("POST", "OPTIONS")
 
 	// ServiceCategory routes (TODO: init db data)
 	router.HandleFunc("/service_categories/{id}", serviceCategoryHandler.GetServiceCategory).Methods("GET", "OPTIONS")
@@ -144,9 +144,9 @@ func NewRouter(
 	// ScheduleSlot routes
 	router.HandleFunc("/schedule_slots/{id}", scheduleSlotHandler.GetScheduleSlot).Methods("GET", "OPTIONS")
 	router.HandleFunc("/schedule_slots", scheduleSlotHandler.ListScheduleSlots).Methods("GET", "OPTIONS")
-	router.Handle("/schedule_slots", masterOnly(http.HandlerFunc(scheduleSlotHandler.CreateScheduleSlot))).Methods("POST", "OPTIONS")
-	router.Handle("/schedule_slots/{id}", masterOnly(http.HandlerFunc(scheduleSlotHandler.UpdateScheduleSlot))).Methods("PUT", "OPTIONS")
-	router.Handle("/schedule_slots/{id}", masterOnly(http.HandlerFunc(scheduleSlotHandler.DeleteScheduleSlot))).Methods("DELETE", "OPTIONS")
+	// router.Handle("/schedule_slots", masterOnly(http.HandlerFunc(scheduleSlotHandler.CreateScheduleSlot))).Methods("POST", "OPTIONS")
+	// router.Handle("/schedule_slots/{id}", masterOnly(http.HandlerFunc(scheduleSlotHandler.UpdateScheduleSlot))).Methods("PUT", "OPTIONS")
+	// router.Handle("/schedule_slots/{id}", masterOnly(http.HandlerFunc(scheduleSlotHandler.DeleteScheduleSlot))).Methods("DELETE", "OPTIONS")
 
 	// Review routes
 	router.HandleFunc("/reviews/{id}", reviewHandler.GetReview).Methods("GET", "OPTIONS")
