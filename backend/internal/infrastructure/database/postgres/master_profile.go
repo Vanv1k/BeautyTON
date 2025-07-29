@@ -87,7 +87,7 @@ func (r *MasterProfileRepository) List(ctx context.Context, query, category, cit
 	// Fetch paginated profiles
 	offset := (page - 1) * pageSize
 	if err := queryBuilder.
-		Order("master_profiles.name ASC").
+		// Order("master_profiles.name ASC").
 		Offset(offset).
 		Limit(pageSize).
 		Select("master_profiles.*").
