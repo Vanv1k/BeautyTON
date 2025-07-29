@@ -56,7 +56,7 @@ func (r *MasterProfileRepository) List(ctx context.Context, query, category, cit
 	queryBuilder := r.db.WithContext(ctx).Model(&entity.MasterProfile{}).
 		Joins("LEFT JOIN services ON services.user_id = master_profiles.id").
 		Joins("LEFT JOIN service_categories ON service_categories.id = services.category_id").
-		Joins("LEFT JOIN users ON users.user_id = master_profiles.user_id").
+		Joins("LEFT JOIN users ON users.id = master_profiles.user_id").
 		Joins("LEFT JOIN cities ON users.city = cities.id")
 
 	if query != "" {

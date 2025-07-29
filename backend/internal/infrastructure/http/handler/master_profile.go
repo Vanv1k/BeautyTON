@@ -195,7 +195,7 @@ func (h *MasterProfileHandler) DeleteMasterProfile(w http.ResponseWriter, r *htt
 // @Success 200 {object} map[string]interface{} "Paginated list of profiles with metadata"
 // @Failure 400 {object} map[string]string
 // @Failure 500 {object} map[string]string
-// @Router /master-profiles [get]
+// @Router /master_profiles [get]
 func (h *MasterProfileHandler) ListProfiles(w http.ResponseWriter, r *http.Request) {
 	// Parse query parameters
 	query := r.URL.Query().Get("query")
