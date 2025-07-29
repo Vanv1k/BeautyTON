@@ -7,57 +7,56 @@ import (
 	httpSwagger "github.com/swaggo/http-swagger"
 
 	"github.com/Vanv1k/BeautyTON/internal/infrastructure/http/handler"
-	"github.com/Vanv1k/BeautyTON/internal/middleware"
 	"github.com/Vanv1k/BeautyTON/internal/usecase"
 )
 
-var allowedOrigins = map[string]bool{
-	"localhost:3000":     true,
-	"dev.miniapp.beautyton.com": true,
-	"miniapp.beautyton.com":    true,
-}
+// var allowedOrigins = map[string]bool{
+// 	"localhost:3000":     true,
+// 	"dev.miniapp.beautyton.com": true,
+// 	"miniapp.beautyton.com":    true,
+// }
 
-// todo: refactor this function to be more generic
-func isPinggySubdomain(origin string) bool {
-	if origin == "" {
-		return false
-	}
+// // todo: refactor this function to be more generic
+// func isPinggySubdomain(origin string) bool {
+// 	if origin == "" {
+// 		return false
+// 	}
 
-	// Check if the origin is a subdomain of pinggy.link
-	if len(origin) > 12 && origin[len(origin)-12:] == "pinggy.link" {
-		return true
-	}
+// 	// Check if the origin is a subdomain of pinggy.link
+// 	if len(origin) > 12 && origin[len(origin)-12:] == "pinggy.link" {
+// 		return true
+// 	}
 
-	// Check for subdomains like *.pinggy.link
-	if len(origin) > 13 && origin[len(origin)-13:] == ".pinggy.link" {
-		return true
-	}
+// 	// Check for subdomains like *.pinggy.link
+// 	if len(origin) > 13 && origin[len(origin)-13:] == ".pinggy.link" {
+// 		return true
+// 	}
 
-	return false
-}
+// 	return false
+// }
 
-func corsMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		origin := r.Header.Get("Origin")
+// func corsMiddleware(next http.Handler) http.Handler {
+// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+// 		origin := r.Header.Get("Origin")
 
-		// Allow exact matches and subdomains for pinggy.link
-		if allowedOrigins[origin] ||
-			(isPinggySubdomain(origin)) {
-			w.Header().Set("Access-Control-Allow-Origin", origin)
-			w.Header().Set("Vary", "Origin")
-		}
+// 		// Allow exact matches and subdomains for pinggy.link
+// 		if allowedOrigins[origin] ||
+// 			(isPinggySubdomain(origin)) {
+// 			w.Header().Set("Access-Control-Allow-Origin", origin)
+// 			w.Header().Set("Vary", "Origin")
+// 		}
 
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+// 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+// 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
-		if r.Method == http.MethodOptions {
-			w.WriteHeader(http.StatusOK)
-			return
-		}
+// 		if r.Method == http.MethodOptions {
+// 			w.WriteHeader(http.StatusOK)
+// 			return
+// 		}
 
-		next.ServeHTTP(w, r)
-	})
-}
+// 		next.ServeHTTP(w, r)
+// 	})
+// }
 
 func NewRouter(
 	userHandler *handler.UserHandler,
@@ -79,15 +78,15 @@ func NewRouter(
 ) *mux.Router {
 	router := mux.NewRouter()
 
-	router.Use(corsMiddleware)
+	// router.Use(corsMiddleware)
 
-	authMiddleware := middleware.TelegramAuthMiddleware(&middleware.TelegramAuthMiddlewareConfig{
-		BotToken:    botToken,
-		UserUsecase: userUsecase,
-	})
-	router.Use(authMiddleware)
+	// authMiddleware := middleware.TelegramAuthMiddleware(&middleware.TelegramAuthMiddlewareConfig{
+	// 	BotToken:    botToken,
+	// 	UserUsecase: userUsecase,
+	// })
+	// router.Use(authMiddleware)
 
-	masterOnly := middleware.RoleMiddleware("master")
+	// masterOnly := middleware.RoleMiddleware("master")
 
 	// User routes
 	router.HandleFunc("/users/{id}", userHandler.GetUser).Methods("GET", "OPTIONS")
