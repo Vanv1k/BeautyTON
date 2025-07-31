@@ -1,7 +1,9 @@
-import type { Master, SearchFilters } from './types';
+import type { SearchFilters } from './types';
 import { filterMasters, sortMasters } from './utils';
 
-export const MOCK_MASTERS: Master[] = [
+import type { MasterPreviewEntity } from '~/entities/master';
+
+export const MOCK_MASTERS: MasterPreviewEntity[] = [
   {
     id: 1,
     name: 'Elena Kozlova',
@@ -129,7 +131,7 @@ export const generateMockMasters = (
   count: number,
   filters?: SearchFilters,
   sortBy?: string,
-): Master[] => {
+): MasterPreviewEntity[] => {
   let filteredMasters = MOCK_MASTERS;
 
   if (filters) {

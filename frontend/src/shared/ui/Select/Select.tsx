@@ -4,12 +4,6 @@ const Select = (props: React.ComponentProps<typeof BaseSelect>) => {
   return (
     <BaseSelect
       classNames={{
-        label: 'text-black/50 dark:text-white/90',
-        // input: [
-        //   'bg-transparent',
-        //   'text-black/90 dark:text-white/90',
-        //   'placeholder:text-default-700/50 dark:placeholder:text-white/60',
-        // ],
         innerWrapper: 'bg-transparent',
         trigger: [
           'bg-default-200/50',

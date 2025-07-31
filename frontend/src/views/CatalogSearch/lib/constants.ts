@@ -1,7 +1,6 @@
 import type { Category, SortOption } from './types';
 
 export const CATEGORIES: Category[] = [
-  { id: 'all', name: 'All Categories' },
   { id: 'makeup', name: 'Makeup Artist' },
   { id: 'hair', name: 'Hair Stylist' },
   { id: 'nails', name: 'Nail Artist' },
@@ -58,7 +57,7 @@ export const RATING_OPTIONS = [
 
 export const DEFAULT_FILTERS = {
   query: '',
-  category: 'all',
+  category: '',
   city: '',
   priceFrom: PRICE_RANGE.min,
   priceTo: PRICE_RANGE.max,

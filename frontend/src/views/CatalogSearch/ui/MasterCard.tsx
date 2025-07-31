@@ -3,18 +3,19 @@ import { useNavigate } from '@tanstack/react-router';
 import { FlaskConical, Heart, Star } from 'lucide-react';
 import type { FC } from 'react';
 
-import type { Master } from '../lib';
 import { formatPrice, formatRating } from '../lib';
 
+import type { MasterPreviewEntity } from '~/entities/master';
+
 type MasterCardProps = {
-  master: Master;
-  onToggleFavorite?: (masterId: number) => void;
+  master: MasterPreviewEntity;
+  onToggleFavorite?: (masterId: string) => void;
 };
 
 const MasterCard: FC<MasterCardProps> = ({ master, onToggleFavorite }) => {
   const navigate = useNavigate();
 
-  const handleCardPress = () => {
+  const handleCardClick = () => {
     navigate({ to: `/master/${master.nickname}` });
   };
 
@@ -24,9 +25,8 @@ const MasterCard: FC<MasterCardProps> = ({ master, onToggleFavorite }) => {
 
   return (
     <Card
-      isPressable
-      className="w-full hover:shadow-lg transition-all duration-300 bg-white/80 dark:bg-gray-800/50 relative"
-      onPress={handleCardPress}
+      className="w-full hover:shadow-lg transition-all duration-300 bg-white/80 dark:bg-gray-800/50 relative cursor-pointer"
+      onClick={handleCardClick}
       isBlurred
     >
       <CardBody className="p-4">

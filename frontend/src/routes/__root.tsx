@@ -3,7 +3,7 @@ import type { QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Outlet, createRootRouteWithContext } from '@tanstack/react-router';
 
-import { useTheme } from '~/entity/theme';
+import { useTheme } from '~/entities/theme';
 import { MiniappInitializer } from '~/features/miniapp';
 import { IS_DEV_DOMAIN, IS_TG_MINIAPP } from '~/shared/config/general';
 

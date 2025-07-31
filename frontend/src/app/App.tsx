@@ -4,7 +4,7 @@ import type { Register } from '@tanstack/react-router';
 
 import { QueryProvider } from './QueryProvider';
 
-import { ThemeProvider } from '~/entity/theme';
+import { ThemeProvider } from '~/entities/theme';
 import { TOAST_OFFSET, TOAST_PLACEMENT } from '~/shared/config/heroui';
 
 type Props = {

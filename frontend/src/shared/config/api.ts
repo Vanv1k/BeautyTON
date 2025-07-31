@@ -1,0 +1,1 @@
+export const PAGINATION_FIRST_PAGE_INDEX = 1;

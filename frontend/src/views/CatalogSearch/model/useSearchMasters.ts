@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import type { Master, SearchFilters } from '../lib';
+import type { SearchFilters } from '../lib';
 import { generateMockMasters } from '../lib';
 
+import type { MasterPreviewEntity } from '~/entities/master';
+
 export const useSearchMasters = (filters: SearchFilters, sortBy: string) => {
-  const [masters, setMasters] = useState<Master[]>([]);
+  const [masters, setMasters] = useState<MasterPreviewEntity[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [favoriteMasters, setFavoriteMasters] = useState<Set<number>>(
     new Set(),

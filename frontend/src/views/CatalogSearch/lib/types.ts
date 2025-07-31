@@ -1,19 +1,7 @@
-export type Master = {
-  id: number;
-  name: string;
-  nickname: string;
-  specialty: string;
-  avatar: string;
-  rating: number;
-  reviews: number;
-  city: string;
-  country: string;
-  priceFrom: number;
-  isPromo?: boolean;
-  isFavorite?: boolean;
-  lookingForModels?: boolean;
-  description?: string;
-};
+import type { MasterPreviewEntity } from '~/entities/master';
+
+// Переиспользуем типы из entity для обратной совместимости
+export type Master = MasterPreviewEntity;
 
 export type SearchFilters = {
   query: string;

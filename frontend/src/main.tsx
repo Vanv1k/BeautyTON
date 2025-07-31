@@ -6,6 +6,7 @@ import * as TanStackQueryProvider from './app';
 import { App } from './app';
 import { routeTree } from './routeTree.gen';
 import './styles.css';
+import { initApi } from './shared/api/initApi';
 import { IS_DEV_DOMAIN, IS_TG_MINIAPP } from './shared/config/general';
 import { initEruda } from './shared/lib/init/initEruda';
 
@@ -29,10 +30,16 @@ declare module '@tanstack/react-router' {
 
 const startApp = () => {
   initEruda();
+  initApi();
 
   if (IS_TG_MINIAPP) {
-    const { init, swipeBehavior, backButton, themeParams } = telegramMiniapp;
-    init();
+    const {
+      init: initMiniapp,
+      swipeBehavior,
+      backButton,
+      themeParams,
+    } = telegramMiniapp;
+    initMiniapp();
 
     backButton.mount();
     swipeBehavior.mount();

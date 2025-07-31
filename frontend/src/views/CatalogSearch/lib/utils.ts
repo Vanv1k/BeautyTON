@@ -1,9 +1,11 @@
-import type { Master, SearchFilters } from './types';
+import type { SearchFilters } from './types';
+
+import type { MasterPreviewEntity } from '~/entities/master';
 
 export const filterMasters = (
-  masters: Master[],
+  masters: MasterPreviewEntity[],
   filters: SearchFilters,
-): Master[] => {
+): MasterPreviewEntity[] => {
   return masters.filter((master) => {
     if (filters.query) {
       const query = filters.query.toLowerCase();
@@ -38,7 +40,10 @@ export const filterMasters = (
   });
 };
 
-export const sortMasters = (masters: Master[], sortBy: string): Master[] => {
+export const sortMasters = (
+  masters: MasterPreviewEntity[],
+  sortBy: string,
+): MasterPreviewEntity[] => {
   const sorted = [...masters];
 
   switch (sortBy) {
@@ -56,7 +61,7 @@ export const sortMasters = (masters: Master[], sortBy: string): Master[] => {
 };
 
 export const formatPrice = (price: number): string => {
-  return `₽${price.toLocaleString()}`;
+  return `$${price.toLocaleString()}`;
 };
 
 export const formatRating = (rating: number): string => {

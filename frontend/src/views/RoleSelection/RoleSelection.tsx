@@ -19,7 +19,9 @@ const RoleSelection: React.FC = () => {
       <div className="space-y-4">
         <Card
           isPressable
-          onPress={() => navigate({ to: '/catalog' })}
+          onPress={() => {
+            navigate({ to: '/catalog' });
+          }}
           className="w-full hover:shadow-lg transition-all duration-300 transform hover:scale-105 bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm"
         >
           <CardBody className="p-6 text-center">

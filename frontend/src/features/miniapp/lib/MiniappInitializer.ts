@@ -7,7 +7,7 @@ import {
 } from '@telegram-apps/sdk-react';
 import { useEffect } from 'react';
 
-import { useTheme } from '~/entity/theme';
+import { useTheme } from '~/entities/theme';
 import { isDarkColor } from '~/shared/lib/color/isDarkColor';
 
 export const MiniappInitializer = () => {

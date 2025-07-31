@@ -29,53 +29,60 @@ export const useSearchParams = () => {
       const params: Record<string, unknown> = {};
 
       // Map query to q parameter
-      if (newFilters.query !== undefined) {
-        params.q = newFilters.query;
-      } else if (search.q) {
-        params.q = search.q;
+      const query =
+        newFilters.query !== undefined ? newFilters.query : search.q;
+      if (query && query !== DEFAULT_FILTERS.query) {
+        params.q = query;
       }
 
-      // Handle other filters
-      if (newFilters.category && newFilters.category !== 'all') {
-        params.category = newFilters.category;
-      } else if (search.category && search.category !== 'all') {
-        params.category = search.category;
+      // Handle category
+      const category =
+        newFilters.category !== undefined
+          ? newFilters.category
+          : search.category;
+      if (category && category !== DEFAULT_FILTERS.category) {
+        params.category = category;
       }
 
-      if (newFilters.city) {
-        params.city = newFilters.city;
-      } else if (search.city) {
-        params.city = search.city;
+      // Handle city
+      const city =
+        newFilters.city !== undefined ? newFilters.city : search.city;
+      if (city && city !== DEFAULT_FILTERS.city) {
+        params.city = city;
       }
 
+      // Handle price range
+      const priceFrom =
+        newFilters.priceFrom !== undefined
+          ? newFilters.priceFrom
+          : search.priceFrom;
+      const priceTo =
+        newFilters.priceTo !== undefined ? newFilters.priceTo : search.priceTo;
+
+      if (priceFrom && priceFrom > DEFAULT_FILTERS.priceFrom) {
+        params.priceFrom = priceFrom;
+      }
+      if (priceTo && priceTo < DEFAULT_FILTERS.priceTo) {
+        params.priceTo = priceTo;
+      }
+
+      // Handle rating
+      const rating =
+        newFilters.rating !== undefined ? newFilters.rating : search.rating;
+      if (rating && rating > DEFAULT_FILTERS.rating) {
+        params.rating = rating;
+      }
+
+      // Handle lookingForModels
+      const lookingForModels =
+        newFilters.lookingForModels !== undefined
+          ? newFilters.lookingForModels
+          : search.lookingForModels;
       if (
-        newFilters.priceFrom &&
-        newFilters.priceFrom > DEFAULT_FILTERS.priceFrom
+        lookingForModels &&
+        lookingForModels !== DEFAULT_FILTERS.lookingForModels
       ) {
-        params.priceFrom = newFilters.priceFrom;
-      } else if (
-        search.priceFrom &&
-        search.priceFrom > DEFAULT_FILTERS.priceFrom
-      ) {
-        params.priceFrom = search.priceFrom;
-      }
-
-      if (newFilters.priceTo && newFilters.priceTo < DEFAULT_FILTERS.priceTo) {
-        params.priceTo = newFilters.priceTo;
-      } else if (search.priceTo && search.priceTo < DEFAULT_FILTERS.priceTo) {
-        params.priceTo = search.priceTo;
-      }
-
-      if (newFilters.rating && newFilters.rating > 0) {
-        params.rating = newFilters.rating;
-      } else if (search.rating && search.rating > 0) {
-        params.rating = search.rating;
-      }
-
-      if (newFilters.lookingForModels) {
-        params.lookingForModels = newFilters.lookingForModels;
-      } else if (search.lookingForModels) {
-        params.lookingForModels = search.lookingForModels;
+        params.lookingForModels = lookingForModels;
       }
 
       navigate({
@@ -109,11 +116,54 @@ export const useSearchParams = () => {
     });
   }, [navigate]);
 
+  /** Значения только установленных фильтров (без значений по умолчанию) */
+  const activeSearchParams = useMemo(() => {
+    const params: Record<string, unknown> = {};
+
+    if (search.q && search.q !== DEFAULT_FILTERS.query) {
+      params.query = search.q;
+    }
+
+    if (search.category && search.category !== DEFAULT_FILTERS.category) {
+      params.category = search.category;
+    }
+
+    if (search.city && search.city !== DEFAULT_FILTERS.city) {
+      params.city = search.city;
+    }
+
+    if (search.priceFrom && search.priceFrom > DEFAULT_FILTERS.priceFrom) {
+      params.priceFrom = search.priceFrom;
+    }
+
+    if (search.priceTo && search.priceTo < DEFAULT_FILTERS.priceTo) {
+      params.priceTo = search.priceTo;
+    }
+
+    if (search.rating && search.rating > DEFAULT_FILTERS.rating) {
+      params.rating = search.rating;
+    }
+
+    if (
+      search.lookingForModels &&
+      search.lookingForModels !== DEFAULT_FILTERS.lookingForModels
+    ) {
+      params.lookingForModels = search.lookingForModels;
+    }
+
+    if (search.sortBy) {
+      params.sortBy = search.sortBy;
+    }
+
+    return params;
+  }, [search]);
+
   return {
     filters,
     sortBy,
     updateFilters,
     updateSort,
     clearFilters,
+    activeSearchParams,
   };
 };
