@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IsNotMiniappRouteImport } from './routes/is-not-miniapp'
+import { Route as BecomeMasterRouteImport } from './routes/become-master'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CatalogIndexRouteImport } from './routes/catalog/index'
 import { Route as MasterScheduleRouteImport } from './routes/master/schedule'
@@ -25,6 +26,11 @@ import { Route as MasterMiniappConnectRouteImport } from './routes/master/miniap
 const IsNotMiniappRoute = IsNotMiniappRouteImport.update({
   id: '/is-not-miniapp',
   path: '/is-not-miniapp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BecomeMasterRoute = BecomeMasterRouteImport.update({
+  id: '/become-master',
+  path: '/become-master',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -85,6 +91,7 @@ const MasterMiniappConnectRoute = MasterMiniappConnectRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/become-master': typeof BecomeMasterRoute
   '/is-not-miniapp': typeof IsNotMiniappRoute
   '/catalog/search': typeof CatalogSearchRoute
   '/master/$masterId': typeof MasterMasterIdRoute
@@ -99,6 +106,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/become-master': typeof BecomeMasterRoute
   '/is-not-miniapp': typeof IsNotMiniappRoute
   '/catalog/search': typeof CatalogSearchRoute
   '/master/$masterId': typeof MasterMasterIdRoute
@@ -114,6 +122,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/become-master': typeof BecomeMasterRoute
   '/is-not-miniapp': typeof IsNotMiniappRoute
   '/catalog/search': typeof CatalogSearchRoute
   '/master/$masterId': typeof MasterMasterIdRoute
@@ -130,6 +139,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/become-master'
     | '/is-not-miniapp'
     | '/catalog/search'
     | '/master/$masterId'
@@ -144,6 +154,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/become-master'
     | '/is-not-miniapp'
     | '/catalog/search'
     | '/master/$masterId'
@@ -158,6 +169,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/become-master'
     | '/is-not-miniapp'
     | '/catalog/search'
     | '/master/$masterId'
@@ -173,6 +185,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BecomeMasterRoute: typeof BecomeMasterRoute
   IsNotMiniappRoute: typeof IsNotMiniappRoute
   CatalogSearchRoute: typeof CatalogSearchRoute
   MasterMasterIdRoute: typeof MasterMasterIdRoute
@@ -193,6 +206,13 @@ declare module '@tanstack/react-router' {
       path: '/is-not-miniapp'
       fullPath: '/is-not-miniapp'
       preLoaderRoute: typeof IsNotMiniappRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/become-master': {
+      id: '/become-master'
+      path: '/become-master'
+      fullPath: '/become-master'
+      preLoaderRoute: typeof BecomeMasterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -277,6 +297,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BecomeMasterRoute: BecomeMasterRoute,
   IsNotMiniappRoute: IsNotMiniappRoute,
   CatalogSearchRoute: CatalogSearchRoute,
   MasterMasterIdRoute: MasterMasterIdRoute,

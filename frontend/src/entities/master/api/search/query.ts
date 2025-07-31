@@ -12,8 +12,6 @@ import { removeNullishFields } from '~/shared/lib/common/removeNullishFields';
 export const useQueryMastersSearch = (params: Record<string, unknown>) => {
   const preparedParams = useMemo(() => removeNullishFields(params), [params]);
 
-  console.log({ preparedParams });
-
   return usePaginatedQuery({
     queryKey: [ENDPOINTS.mastersProfilesList.url(), preparedParams],
     queryFn: ({ pageParam }) =>

@@ -7,4 +7,9 @@ export const FEATURE_FLAGS = {
    * Блок предложений по поиску скрыт
    */
   hideSuggestionsInSearch: true,
+
+  /**
+   * Показывать статистику на странице "Стать мастером"
+   */
+  showBecomeMasterStats: false,
 };
