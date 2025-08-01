@@ -1,10 +1,19 @@
 import { Card, CardBody, Button, Snippet } from '@heroui/react';
 import { useNavigate } from '@tanstack/react-router';
+import { retrieveRawInitData } from '@telegram-apps/sdk-react';
 import { CheckCircle, ExternalLink, Share, Home } from 'lucide-react';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 const MiniappSuccess: React.FC = () => {
   const navigate = useNavigate();
+
+  // todo: remove after tests
+  const initDataRaw = retrieveRawInitData();
+
+  useEffect(() => {
+    // eslint-disable-next-line no-console
+    console.log(initDataRaw);
+  }, [initDataRaw]);
 
   return (
     <div className="min-h-screen p-4 flex flex-col justify-center">
@@ -68,6 +77,10 @@ const MiniappSuccess: React.FC = () => {
           </ul>
         </CardBody>
       </Card>
+
+      <Snippet color="warning" className="w-full overflow-auto mb-6" hideSymbol>
+        {initDataRaw}
+      </Snippet>
 
       <Button
         variant="flat"
